@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * Script Class
+ *
+ * Handles the script and style functionality of plugin
+ *
+ * @package Fina Forte
+ * @since 1.0
+ */
+// Exit if accessed directly
+if (!defined('ABSPATH'))
+    exit;
+
+class Finaforte_Script {
+
+    function __construct() {
+
+        add_action('wp_enqueue_scripts', array($this, 'finaforte_stylesheet'));
+        add_action('admin_enqueue_scripts', array($this, 'finaforte_admin_stylesheet'), 7);
+    }
+
+    /**
+     *
+     * @return Enqueue front side required css
+     */
+    function finaforte_stylesheet() {
+
+        wp_register_style('finaforte-bootstrape-css', FINAFORTE_URL . 'assets/css/bootstrap.css');
+        wp_enqueue_style('finaforte-bootstrape-css');
+
+        wp_register_style('finaforte-font-awesome', FINAFORTE_URL . 'assets/css/font-awesome.min.css');
+        wp_enqueue_style('finaforte-font-awesome');
+
+        wp_register_style('finaforte-style', FINAFORTE_URL . 'assets/css/style.css');
+        wp_enqueue_style('finaforte-style');
+
+        wp_register_style('finaforte-range-css', FINAFORTE_URL . 'assets/css/jquery.range.css');
+        wp_enqueue_style('finaforte-range-css');
+
+        wp_register_script('finaforte-jquery', FINAFORTE_URL . 'assets/js/jquery-3.3.1.min.js');
+        wp_enqueue_script('finaforte-jquery');
+
+        wp_register_script('popper-min-js', FINAFORTE_URL . 'assets/js/popper.min.js');
+        wp_enqueue_script('popper-min-js');
+        wp_register_script('finaforte-range-js', FINAFORTE_URL . 'assets/js/jquery.range.js');
+        wp_enqueue_script('finaforte-range-js');
+
+        wp_register_script('finaforte-bootstrap-js', FINAFORTE_URL . 'assets/js/bootstrap.min.js');
+        wp_enqueue_script('finaforte-bootstrap-js');       
+
+        wp_register_script('finaforte-custom', FINAFORTE_URL . 'assets/js/custom.js');
+        // Registering Public Script (Slider Script)
+        wp_register_script('ftpp-public-script', FTPP_URL . 'assets/js/ftpp-public.js', array('jquery'), FTPP_VERSION, true);
+        wp_localize_script('finaforte-custom', 'ffc', array(
+            'ajaxurl' => admin_url('admin-ajax.php', ( is_ssl() ? 'https' : 'http')),
+        ));
+
+        wp_enqueue_script('finaforte-custom');
+       
+    }
+
+    /**
+     *
+     * @return Enqueue admin panel required css
+     */
+    function finaforte_admin_stylesheet() {
+
+        global $wp_version, $wp_query, $typenow;
+        $new_ui = $wp_version >= '3.5' ? '1' : '0'; // Check wordpress version for older scripts
+
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_style('wp-color-picker');
+
+        wp_register_script('finaforte-admin-js', FINAFORTE_URL . 'assets/js/admin.js', array('jquery'));
+        wp_localize_script('finaforte-admin-js', 'FinaforteAdmin', array(
+            'new_ui' => $new_ui,
+            'img_edit_popup_text' => __('Edit Image in Popup', 'album-and-image-gallery-plus-lightbox'),
+            'attachment_edit_text' => __('Edit Image', 'album-and-image-gallery-plus-lightbox'),
+            'img_delete_text' => __('Remove Image', 'album-and-image-gallery-plus-lightbox'),
+            'remove_gallery_imgs_text' => __('Are you sure to remove all images from this gallery!', 'album-and-image-gallery-plus-lightbox')
+        ));
+        wp_enqueue_script('finaforte-admin-js');
+        wp_enqueue_media(); // For media uploader
+
+        wp_register_style('finaforte-admin-css', FINAFORTE_URL . 'assets/css/admin.css');
+        wp_enqueue_style('finaforte-admin-css');
+    }
+
+}
+
+$finaforte_script = new Finaforte_Script();

@@ -1,0 +1,413 @@
+<?php
+/**
+ * Settings Page
+ *
+ * @package Buttons With Style Pro
+ * @since 1.0.0
+ */
+
+// Exit if accessed directly
+if ( !defined( 'ABSPATH' ) ) exit;
+?>
+
+<div class="wrap bwswpos-settings">
+	
+	<h2>Buttons With Style Pro Settings</h2><br/>
+	
+	<?php
+	// Success message
+	if( isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true' ) {
+		echo '<div id="message" class="updated notice notice-success is-dismissible">
+				<p><strong>Your changes saved successfully</strong></p>
+			  </div>';
+	}
+	?>
+	
+	<form action="options.php" method="POST" id="finaforte-settings-form" class="finaforte-settings-form">
+		
+		<?php settings_fields( 'finaforte_plugin_options' ); ?>		
+		<div id="finaforte-custom-css-sett" class="post-box-container finaforte-custom-css-sett">
+			<!-- solvency -->
+			<div class="metabox-holder">
+				<div class="meta-box-sortables ui-sortable">
+					<div class="postbox">
+
+						<button class="handlediv button-link" type="button"><span class="toggle-indicator"></span></button>
+
+							
+							<!-- Settings box title -->
+							<h3 class="hndle">
+								<span>Solvency</span>
+							</h3>
+							
+							<div class="inside">
+							
+							<table class="form-table finaforte-custom-css-tbl">
+								<tbody>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css">Green text:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[solvency_green_text]" id="solvency_green_text" value="<?php echo finaforte_esc_attr(finaforte_get_option('solvency_green_text')); ?>"/><br/>
+											<span class="description">Enter lable for Green Text</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css">Yellow text:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[solvency_yellow_text]" id="solvency_yellow_text" value="<?php echo finaforte_esc_attr(finaforte_get_option('solvency_yellow_text')); ?>"/><br/>
+											<span class="description">Enter lable for Yellow Text</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css">Red text:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[solvency_red_text]" id="solvency_red_text" value="<?php echo finaforte_esc_attr(finaforte_get_option('solvency_red_text')); ?>"/><br/>
+											<span class="description">Enter lable for Red Text.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css">Green Text Color:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[solvency_green_color]" id="solvency_green_color" value="<?php echo finaforte_esc_attr(finaforte_get_option('solvency_green_color')); ?>"/><br/>
+											<span class="description">Choose Green Text Color.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css">Yellow text Color:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[solvency_yellow_color]" id="solvency_yellow_color" value="<?php echo finaforte_esc_attr(finaforte_get_option('solvency_yellow_color')); ?>"/><br/>
+											<span class="description">Choose Yellow text Color.</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css">Red text Color:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[solvency_red_color]" id="solvency_red_color" value="<?php echo finaforte_esc_attr(finaforte_get_option('solvency_red_color')); ?>"/><br/>
+											<span class="description">Choose Red text Color.</span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" valign="top" scope="row">
+											<input type="submit" id="bwswpos-settings-submit" name="bwswpos-settings-submit" class="button button-primary right" value="<?php _e('Save Changes','buttons-with-style');?>" />
+										</td>
+									</tr>
+								</tbody>
+							 </table>
+
+						</div><!-- .inside -->
+
+
+					</div><!-- #bwswpos-custom-css -->
+				</div><!-- .meta-box-sortables ui-sortable -->
+			</div><!-- .metabox-holder -->
+
+			<!-- liquidity -->
+			<div class="metabox-holder">
+				<div class="meta-box-sortables ui-sortable">
+					<div class="postbox">
+
+						<button class="handlediv button-link" type="button"><span class="toggle-indicator"></span></button>
+
+							
+							<!-- Settings box title -->
+							<h3 class="hndle">
+								<span><?php _e( 'Liquidity', 'buttons-with-style' ); ?></span>
+							</h3>
+							
+							<div class="inside">
+							
+							<table class="form-table finaforte-custom-css-tbl">
+								<tbody>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Green text', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[liquidity_green_text]" id="liquidity_green_text" value="<?php echo finaforte_esc_attr(finaforte_get_option('liquidity_green_text')); ?>"/><br/>
+											<span class="description"><?php _e('Enter lable for Green Text.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Yellow text', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[liquidity_yellow_text]" id="liquidity_yellow_text" value="<?php echo finaforte_esc_attr(finaforte_get_option('liquidity_yellow_text')); ?>"/><br/>
+											<span class="description"><?php _e('Enter lable for Yellow Text.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Red text', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[liquidity_red_text]" id="liquidity_red_text" value="<?php echo finaforte_esc_attr(finaforte_get_option('liquidity_red_text')); ?>"/><br/>
+											<span class="description"><?php _e('Enter lable for Red Text.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Green Text Color', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[liquidity_green_color]" id="liquidity_green_color" value="<?php echo finaforte_esc_attr(finaforte_get_option('liquidity_green_color')); ?>"/><br/>
+											<span class="description"><?php _e('Choose Green Text Color.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Yellow text Color', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[liquidity_yellow_color]" id="liquidity_yellow_color" value="<?php echo finaforte_esc_attr(finaforte_get_option('liquidity_yellow_color')); ?>"/><br/>
+											<span class="description"><?php _e('Choose Yellow text Color.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Red text Color', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[liquidity_red_color]" id="liquidity_red_color" value="<?php echo finaforte_esc_attr(finaforte_get_option('liquidity_red_color')); ?>"/><br/>
+											<span class="description"><?php _e('Choose Red text Color.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" valign="top" scope="row">
+											<input type="submit" id="bwswpos-settings-submit" name="bwswpos-settings-submit" class="button button-primary right" value="<?php _e('Save Changes','buttons-with-style');?>" />
+										</td>
+									</tr>
+								</tbody>
+							 </table>
+
+						</div><!-- .inside -->
+
+
+					</div><!-- #bwswpos-custom-css -->
+				</div><!-- .meta-box-sortables ui-sortable -->
+			</div><!-- .metabox-holder -->
+
+			<!-- advisor Photo -->
+			<div class="metabox-holder">
+				<div class="meta-box-sortables ui-sortable">
+					<div class="postbox">
+
+						<button class="handlediv button-link" type="button"><span class="toggle-indicator"></span></button>
+
+							
+							<!-- Settings box title -->
+							<h3 class="hndle">
+								<span><?php _e( 'Advisor Photo for Total Calculation', 'buttons-with-style' ); ?></span>
+							</h3>
+							
+							<div class="inside">
+							
+							<table class="form-table finaforte-custom-css-tbl">
+								<tbody>
+									
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Advicer Photo', 'buttons-with-style'); ?>:</label>
+										</th>	
+										<td>
+											<input type="text" name="finaforte_options[advicer_photo]" value="<?php echo finaforte_esc_attr( finaforte_get_option('advicer_photo') ); ?>" id="aigpl-default-img" class="regular-text aigpl-default-img aigpl-img-upload-input" />
+											<input type="button" name="aigpl_advicer_photo" class="button-secondary aigpl-img-uploader" value="<?php _e( 'Upload Image', 'album-and-image-gallery-plus-lightbox'); ?>" />
+											<input type="button" name="aigpl_advicer_photo_clear" id="aigpl-default-img-clear" class="button button-secondary aigpl-image-clear" value="<?php _e( 'Clear', 'album-and-image-gallery-plus-lightbox'); ?>" /> <br />
+											<span class="description"><?php _e( 'Photo of advisor (for next to the total calculation).', 'album-and-image-gallery-plus-lightbox' ); ?></span>
+											<?php
+												$advicer_photo = '';
+												if( finaforte_get_option('advicer_photo') ) { 
+													$advicer_photo = '<img src="'.finaforte_get_option('advicer_photo').'" alt="" />';
+												}
+											?>
+											<div class="aigpl-imgs-preview"><?php echo $advicer_photo; ?></div>
+										</td>										
+									</tr>									
+									<tr>
+										<td colspan="2" valign="top" scope="row">
+											<input type="submit" id="bwswpos-settings-submit" name="bwswpos-settings-submit" class="button button-primary right" value="<?php _e('Save Changes','buttons-with-style');?>" />
+										</td>
+									</tr>
+								</tbody>
+							 </table>
+
+						</div><!-- .inside -->
+
+
+					</div><!-- #bwswpos-custom-css -->
+				</div><!-- .meta-box-sortables ui-sortable -->
+			</div><!-- .metabox-holder -->
+			<!-- Text description in the total calculation (above the 'receive by e-mail' button) -->
+			<div class="metabox-holder">
+				<div class="meta-box-sortables ui-sortable">
+					<div class="postbox">
+
+						<button class="handlediv button-link" type="button"><span class="toggle-indicator"></span></button>
+
+							
+							<!-- Settings box title -->
+							<h3 class="hndle">
+								<span><?php _e( 'Text description in the total calculation (above the : receive by e-mail button)', 'buttons-with-style' ); ?></span>
+							</h3>
+							
+							<div class="inside">
+							
+							<table class="form-table finaforte-custom-css-tbl">
+								<tbody>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Contact for Advice', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="text" name="finaforte_options[advice_contact]" id="advice_contact" value="<?php echo finaforte_esc_attr(finaforte_get_option('advice_contact')); ?>" onkeyup="check(); return false;" /><br/>
+											<span class="description" id="message"><?php _e('Contact Number for Advice.', 'buttons-with-style'); ?></span> <br>
+											<p class="error_Msg"> Error! Phone number can contain only numbers from 0-9 and + or - sign </p> 
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('E-mail from recipient of the lead', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="email" name="finaforte_options[rol_email]" id="rol_email" value="<?php echo finaforte_esc_attr(finaforte_get_option('rol_email')); ?>"/><br/>
+											<span class="description"><?php _e('E-mail from recipient of the lead.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e(' E-mail CC1 ', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="email" name="finaforte_options[cc1_email]" id="cc1_email" value="<?php echo finaforte_esc_attr(finaforte_get_option('cc1_email')); ?>"/><br/>
+											<span class="description"><?php _e('E-mail CC1 receiver of the lead.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('E-mail CC2', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="email" name="finaforte_options[cc2_email]" id="cc2_email" value="<?php echo finaforte_esc_attr(finaforte_get_option('cc2_email')); ?>"/><br/>
+											<span class="description"><?php _e(' E-mail CC2 recipient of the lead.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									
+									<tr>
+										<td colspan="2" valign="top" scope="row">
+											<input type="submit" id="bwswpos-settings-submit" name="bwswpos-settings-submit" class="button button-primary right" value="<?php _e('Save Changes','buttons-with-style');?>" />
+										</td>
+									</tr>
+								</tbody>
+							 </table>
+
+						</div><!-- .inside -->
+
+						
+					</div><!-- #bwswpos-custom-css -->
+				</div><!-- .meta-box-sortables ui-sortable -->
+			</div><!-- .metabox-holder -->
+
+			<!-- CMS Fields -->
+			<div class="metabox-holder">
+				<div class="meta-box-sortables ui-sortable">
+					<div class="postbox">
+
+						<button class="handlediv button-link" type="button"><span class="toggle-indicator"></span></button>
+
+							
+							<!-- Settings box title -->
+							<h3 class="hndle">
+								<span><?php _e( 'CMS Fields', 'buttons-with-style' ); ?></span>
+							</h3>
+							
+							<div class="inside">
+							
+							<table class="form-table finaforte-custom-css-tbl">
+								<tbody>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Key interest max mortgage calculation 1', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="number" name="finaforte_options[ki_max_cal_1]" id="ki_max_cal_1" value="<?php echo finaforte_esc_attr(finaforte_get_option('ki_max_cal_1')); ?>"/><br/>
+											<span class="description"><?php _e('Key interest maximum mortgage calculation 1.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Key interest min mortgage calculation 2', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="number" name="finaforte_options[ki_min_cal_2]" id="ki_min_cal_2" value="<?php echo finaforte_esc_attr(finaforte_get_option('ki_min_cal_2')); ?>"/><br/>
+											<span class="description"><?php _e('Key interest minimum mortgage calculation 2.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Key interest min mortgage calculation 3', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="number" name="finaforte_options[ki_min_cal_3]" id="ki_min_cal_3" value="<?php echo finaforte_esc_attr(finaforte_get_option('ki_min_cal_3')); ?>"/><br/>
+											<span class="description"><?php _e('Key interest minimum mortgage calculation 3.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											<label for="finaforte-custom-css"><?php _e('Key interest min mortgage calculation 4', 'buttons-with-style'); ?>:</label>
+										</th>
+										<td>
+											
+											<input type="number" name="finaforte_options[ki_min_cal_4]" id="ki_min_cal_4" value="<?php echo finaforte_esc_attr(finaforte_get_option('ki_min_cal_4')); ?>"/><br/>
+											<span class="description"><?php _e('Key interest minimum mortgage calculation 4.', 'buttons-with-style'); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" valign="top" scope="row">
+											<input type="submit" id="bwswpos-settings-submit" name="bwswpos-settings-submit" class="button button-primary right" value="<?php _e('Save Changes','buttons-with-style');?>" />
+										</td>
+									</tr>
+								</tbody>
+							 </table>
+
+						</div><!-- .inside -->
+						
+					</div><!-- #bwswpos-custom-css -->
+				</div><!-- .meta-box-sortables ui-sortable -->
+			</div><!-- .metabox-holder -->
+		</div><!-- #finaforte-custom-css-sett -->
+		<!-- Custom CSS Settings Ends -->
+		
+	</form><!-- end .bwswpos-settings-form -->
+	
+</div><!-- end .bwswpos-settings -->

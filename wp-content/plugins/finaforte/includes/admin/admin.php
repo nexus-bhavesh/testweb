@@ -1,0 +1,154 @@
+<?php
+
+/**
+ * Admin Class
+ *
+ * Handles the Admin side functionality of plugin
+ *
+ * @package Fina Forte
+ * @since 1.0
+ */
+// Exit if accessed directly
+if (!defined('ABSPATH'))
+    exit;
+
+class Finaforte_Admin {
+
+    function __construct() {
+
+        // Action to register admin menu
+        add_action('admin_menu', array($this, 'finaforte_register_menu'), 9);
+
+        // Action to register plugin settings
+        add_action('admin_init', array($this, 'finaforte_register_settings'));
+
+        // Ajax call to update calculations
+        add_action('wp_ajax_ffc_final_result', array($this, 'ffc_final_result'));
+        add_action('wp_ajax_nopriv_ffc_final_result', array($this, 'ffc_final_result'));
+    }
+
+    function ffc_final_result() {
+
+        $result = array();
+        $result['success'] = 0;
+
+        if (!empty($_POST['totalincome'])) {
+
+            $sol_liq_wrong_notice = finaforte_get_option('sol_liq_wrong_notice');
+            $pr_yr_income = $_POST['totalincome'];
+            $ti_sum = $_POST['ti_sum'];
+            $user_per = finaforte_get_option('mortgage_interest');
+            $number_of_periods = finaforte_get_option('number_of_periods');
+            $n_o_p = $number_of_periods * 12;
+            $intrest_ammt = maximale_hypotheek_val($user_per, $pr_yr_income, $ti_sum);
+            $maandrente = ($user_per / 100) / 12;
+            $maandlasten = $intrest_ammt / 12;
+
+            $maximale_hypotheek = $maandlasten / ($maandrente / (1 - (pow((1 + $maandrente), -$n_o_p) )));
+
+            $result['maandlasten'] = $maandlasten;
+            $result['maximale_hypotheek'] = $maximale_hypotheek;
+            $result['sol_liq_wrong_notice'] = $sol_liq_wrong_notice;
+            $result['total_income_disp'] = $intrest_ammt;
+        }
+
+        $result['sol_liq_wrong_notice']   = finaforte_get_option('sol_liq_wrong_notice');
+        $result['sol_wrong_notice']       = finaforte_get_option('sol_wrong_notice');
+        $result['liq_wrong_notice']       = finaforte_get_option('liq_wrong_notice');
+        $result['p_sol_liq_wrong_notice'] = finaforte_get_option('p_sol_liq_wrong_notice');
+        $result['p_liq_wrong_notice']     = finaforte_get_option('p_liq_wrong_notice');
+        $result['p_sol_wrong_notice']     = finaforte_get_option('p_sol_wrong_notice');
+
+        echo json_encode($result);
+       //echo $sol_liq_wrong_notice;
+        exit;
+    }
+
+    /**
+     * Function to register admin menus
+     * 
+     * @package Fina Forte
+     * @since 1.0
+     */
+    function finaforte_register_menu() {
+
+        add_menu_page('Fina Forte', 'Fina Forte', 'manage_options', 'finaforte_settings', array($this, 'finaforte_op_content_function'), 'dashicons-sticky', 6);
+    }
+
+    /**
+     *
+     * @global type $wp_version
+     * @return html Display setting options
+     */
+    function finaforte_op_content_function() {
+        require_once('settings/options.php');
+    }
+
+    /**
+     * Function register setings
+     * 
+     * @package Fina Forte
+     * @since 1.0
+     */
+    function finaforte_register_settings() {
+        register_setting('finaforte_plugin_options', 'finaforte_options', array($this, 'finaforte_validate_options'));
+    }
+
+    /**
+     * Validate Settings Options
+     * 
+     * @package Fina Forte
+     * @since 1.0
+     */
+    function finaforte_validate_options($input) {
+
+        $input['solvency_green_text'] = isset($input['solvency_green_text']) ? finaforte_slashes_deep($input['solvency_green_text'], true) : '';
+        $input['solvency_yellow_text'] = isset($input['solvency_yellow_text']) ? finaforte_slashes_deep($input['solvency_yellow_text'], true) : '';
+        $input['solvency_red_text'] = isset($input['solvency_red_text']) ? finaforte_slashes_deep($input['solvency_red_text'], true) : '';
+        $input['solvency_green_color'] = isset($input['solvency_green_color']) ? finaforte_slashes_deep($input['solvency_green_color'], true) : '';
+        $input['solvency_yellow_color'] = isset($input['solvency_yellow_color']) ? finaforte_slashes_deep($input['solvency_yellow_color'], true) : '';
+        $input['solvency_red_color'] = isset($input['solvency_red_color']) ? finaforte_slashes_deep($input['solvency_red_color'], true) : '';
+        $input['liquidity_green_text'] = isset($input['liquidity_green_text']) ? finaforte_slashes_deep($input['liquidity_green_text'], true) : '';
+        $input['liquidity_yellow_text'] = isset($input['liquidity_yellow_text']) ? finaforte_slashes_deep($input['liquidity_yellow_text'], true) : '';
+        $input['liquidity_red_text'] = isset($input['liquidity_red_text']) ? finaforte_slashes_deep($input['liquidity_red_text'], true) : '';
+        $input['liquidity_green_color'] = isset($input['liquidity_green_color']) ? finaforte_slashes_deep($input['liquidity_green_color'], true) : '';
+        $input['liquidity_yellow_color'] = isset($input['liquidity_yellow_color']) ? finaforte_slashes_deep($input['liquidity_yellow_color'], true) : '';
+        $input['liquidity_red_color'] = isset($input['liquidity_red_color']) ? finaforte_slashes_deep($input['liquidity_red_color'], true) : '';
+        $input['advicer_photo'] = isset($input['advicer_photo']) ? finaforte_slashes_deep($input['advicer_photo'], true) : '';
+        $input['advice_contact'] = isset($input['advice_contact']) ? $input['advice_contact'] : '';
+        $input['rol_email'] = is_email($input['rol_email']) ? $input['rol_email'] : '';
+        $input['cc1_email'] = is_email($input['cc1_email']) ? $input['cc1_email'] : '';
+        $input['cc2_email'] = is_email($input['cc2_email']) ? $input['cc2_email'] : '';
+        // calculation fields
+        $input['calculation_1_rate'] = isset($input['calculation_1_rate']) ? finaforte_slashes_deep($input['calculation_1_rate'], true) : '';
+        $input['calculation_2_rate'] = isset($input['calculation_2_rate']) ? finaforte_slashes_deep($input['calculation_2_rate'], true) : '';
+        $input['calculation_3_rate'] = isset($input['calculation_3_rate']) ? finaforte_slashes_deep($input['calculation_3_rate'], true) : '';
+        $input['calculation_4_rate'] = isset($input['calculation_4_rate']) ? finaforte_slashes_deep($input['calculation_4_rate'], true) : '';
+
+        $input['calculation_1_y'] = isset($input['calculation_1_y']) ? finaforte_slashes_deep($input['calculation_1_y'], true) : '';
+        $input['calculation_2_y'] = isset($input['calculation_2_y']) ? finaforte_slashes_deep($input['calculation_2_y'], true) : '';
+        $input['calculation_3_y'] = isset($input['calculation_3_y']) ? finaforte_slashes_deep($input['calculation_3_y'], true) : '';
+        $input['calculation_4_y'] = isset($input['calculation_4_y']) ? finaforte_slashes_deep($input['calculation_4_y'], true) : '';
+
+        $input['belastingteruggave_1'] = isset($input['belastingteruggave_1']) ? finaforte_slashes_deep($input['belastingteruggave_1'], true) : '';
+        $input['belastingteruggave_2'] = isset($input['belastingteruggave_2']) ? finaforte_slashes_deep($input['belastingteruggave_2'], true) : '';
+        $input['belastingteruggave_3'] = isset($input['belastingteruggave_3']) ? finaforte_slashes_deep($input['belastingteruggave_3'], true) : '';
+        $input['belastingteruggave_4'] = isset($input['belastingteruggave_4']) ? finaforte_slashes_deep($input['belastingteruggave_4'], true) : '';
+
+        // Tooltips fields
+        $input['tooltip_select_year'] = isset($input['tooltip_select_year']) ? finaforte_slashes_deep($input['tooltip_select_year'], true) : '';
+        $input['tooltip_salary'] = isset($input['tooltip_salary']) ? finaforte_slashes_deep($input['tooltip_salary'], true) : '';
+        $input['tooltip_mortgage_interest'] = isset($input['tooltip_mortgage_interest']) ? finaforte_slashes_deep($input['tooltip_mortgage_interest'], true) : '';
+        $input['tooltip_total_p_incom'] = isset($input['tooltip_total_p_incom']) ? finaforte_slashes_deep($input['tooltip_total_p_incom'], true) : '';
+        $input['cal_sugg_text'] = isset($input['cal_sugg_text']) ? finaforte_slashes_deep($input['cal_sugg_text'], true) : '';
+
+        // CMS fields
+        $input['maximale_hypotheek_3'] = isset($input['maximale_hypotheek_3']) ? finaforte_slashes_deep($input['maximale_hypotheek_3'], true) : '';
+        $input['mortgage_interest'] = isset($input['mortgage_interest']) ? finaforte_slashes_deep($input['mortgage_interest'], true) : '';
+        $input['number_of_periods'] = isset($input['number_of_periods']) ? finaforte_slashes_deep($input['number_of_periods'], true) : '';
+        $input['theme_color'] = isset($input['theme_color']) ? finaforte_slashes_deep($input['theme_color'], true) : '';
+
+        return $input;
+    }
+}
+$finaforte_admin = new Finaforte_Admin();

@@ -1,0 +1,189 @@
+jQuery(document).ready(function($) {
+
+	 jQuery('#theme_color,#solvency_green_color,#solvency_yellow_color,#solvency_red_color,#liquidity_red_color,#liquidity_green_color,#liquidity_yellow_color').wpColorPicker();
+
+	// Media Uploader
+	$( document ).on( 'click', '.aigpl-img-uploader', function() {
+		
+		var imgfield, showfield;
+		imgfield			= jQuery(this).prev('input').attr('id');
+		showfield 			= jQuery(this).parents('td').find('.aigpl-imgs-preview');
+		var multiple_img	= false;
+		multiple_img 		= (typeof(multiple_img) != 'undefined' && multiple_img == 'true') ? true : false;
+		
+		if( typeof wp == "undefined" || FinaforteAdmin.new_ui != '1' ) { // check for media uploader
+			
+			tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
+	    	
+			window.original_send_to_editor = window.send_to_editor;
+			window.send_to_editor = function(html) {
+				
+				if(imgfield)  {
+					
+					var mediaurl = $('img',html).attr('src');
+					$('#'+imgfield).val(mediaurl);
+					showfield.html('<img src="'+mediaurl+'" />');
+					tb_remove();
+					imgfield = '';
+					
+				} else {
+					window.original_send_to_editor(html);
+				}
+			};
+	    		return false;
+		      
+		} else {
+			
+			var file_frame;
+			
+			var button = jQuery(this);
+		
+			// If the media frame already exists, reopen it.
+			if ( file_frame ) {
+				file_frame.open();
+			  return;
+			}
+
+			if( multiple_img == true ) {
+				
+				// Create the media frame.
+				file_frame = wp.media.frames.file_frame = wp.media({
+					title: button.data( 'title' ),
+					button: {
+						text: button.data( 'button-text' ),
+					},
+					multiple: true  // Set to true to allow multiple files to be selected
+				});
+				
+			} else {
+				
+				// Create the media frame.
+				file_frame = wp.media.frames.file_frame = wp.media({
+					frame: 'post',
+					state: 'insert',
+					title: button.data( 'title' ),
+					button: {
+						text: button.data( 'button-text' ),
+					},
+					multiple: false  // Set to true to allow multiple files to be selected
+				});
+			}
+			
+			file_frame.on( 'menu:render:default', function(view) {
+		        // Store our views in an object.
+		        var views = {};
+				
+		        // Unset default menu items
+		        view.unset('library-separator');
+		        view.unset('gallery');
+		        view.unset('featured-image');
+		        view.unset('embed');
+				
+		        // Initialize the views in our view object.
+		        view.set(views);
+		    });
+
+			// When an image is selected, run a callback.
+			file_frame.on( 'select', function() {
+				
+				// Get selected size from media uploader
+				var selected_size = $('.attachment-display-settings .size').val();
+				var selection = file_frame.state().get('selection');
+				
+				selection.each( function( attachment, index ) {
+					
+					attachment = attachment.toJSON();
+
+					// Selected attachment url from media uploader
+					var attachment_id = attachment.id ? attachment.id : '';
+					if( attachment_id && attachment.sizes && multiple_img == true ) {
+						
+						var attachment_url 			= attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+						var attachment_edit_link	= attachment.editLink ? attachment.editLink : '';
+
+						showfield.append('\
+							<div class="aigpl-img-wrp">\
+								<div class="aigpl-img-tools aigpl-hide">\
+									<span class="aigpl-tool-icon aigpl-edit-img dashicons dashicons-edit" title="'+FinaforteAdmin.img_edit_popup_text+'"></span>\
+									<a href="'+attachment_edit_link+'" target="_blank" title="'+FinaforteAdmin.attachment_edit_text+'"><span class="aigpl-tool-icon aigpl-edit-attachment dashicons dashicons-visibility"></span></a>\
+									<span class="aigpl-tool-icon aigpl-del-tool aigpl-del-img dashicons dashicons-no" title="'+FinaforteAdmin.img_delete_text+'"></span>\
+								</div>\
+								<img class="aigpl-img" src="'+attachment_url+'" alt="" />\
+								<input type="hidden" class="aigpl-attachment-no" name="aigpl_img[]" value="'+attachment_id+'" />\
+							</div>\
+								');
+						showfield.find('.aigpl-img-placeholder').hide();
+					}
+				});
+			});
+			
+			// When an image is selected, run a callback.
+			file_frame.on( 'insert', function() {
+				
+				// Get selected size from media uploader
+				var selected_size = $('.attachment-display-settings .size').val();
+				
+				var selection = file_frame.state().get('selection');
+				selection.each( function( attachment, index ) {
+					attachment = attachment.toJSON();
+					
+					// Selected attachment url from media uploader
+					var attachment_url = attachment.sizes[selected_size].url;
+					
+					// place first attachment in field
+					$('#'+imgfield).val(attachment_url);
+					showfield.html('<img src="'+attachment_url+'" />');
+				});
+			});
+			
+			// Finally, open the modal
+			file_frame.open();
+		}
+	});
+
+	// Clear Uploader Image
+	$(document).on('click', '.aigpl-image-clear', function(){
+		$(this).parent().find('.aigpl-img-upload-input').val('');
+		$(this).parent().find('.aigpl-imgs-preview').html('');
+	});
+
+	$('.error_Msg').hide(); 
+
+  	$(".finaforte-settings-form").submit(function(event){ 
+	    var data=$('#advice_contact').val();  
+	    if(phone_validate(data)) 
+	    { 
+	       $('.error_Msg').hide();  // hides error msg if validation is true
+	    } 
+	    else 
+	    { 
+	       $('.error_Msg').show();   // shows validation msg if validation is false
+	       event.preventDefault(); 
+	    } 
+    });
+});
+
+function phone_validate(phno) 
+{ 
+  var regexPattern=new RegExp(/^[0-9-+\s]+$/);    // regular expression pattern
+  
+  return regexPattern.test(phno); 
+} 
+
+function check()
+{
+
+    var pass1 = document.getElementById('advice_contact');
+
+   var goodColor = "#fff";
+    var badColor = "#ce142e5e";
+    if( pass1.value.length == 11 || pass1.value.length > 12 ){ 
+
+        pass1.style.backgroundColor = badColor;
+       
+         $('.error_Msg').show();
+    } else {
+    	$('.error_Msg').hide();
+    	pass1.style.backgroundColor = goodColor;
+    }
+}

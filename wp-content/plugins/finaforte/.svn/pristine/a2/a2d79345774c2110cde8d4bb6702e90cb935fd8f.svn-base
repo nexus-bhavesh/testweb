@@ -1,0 +1,1698 @@
+<?php
+
+/**
+ * Update default settings
+ * 
+ * @package Fina Forte
+ * @since 1.0
+ */
+function finaforte_default_settings() {
+
+    global $finaforte_options;
+
+    $finaforte_options = array(
+        'solvency_green_text' => '',
+        'solvency_yellow_text' => '',
+        'solvency_red_text' => '',
+        'solvency_green_color' => '',
+        'solvency_yellow_color' => '',
+        'solvency_red_color' => '',
+        'liquidity_green_text' => '',
+        'liquidity_yellow_text' => '',
+        'liquidity_red_text' => '',
+        'liquidity_green_color' => '',
+        'liquidity_yellow_color' => '',
+        'liquidity_red_color' => '',
+        'advicer_photo' => '',
+        'advice_contact' => '',
+        'rol_email' => '',
+        'cc1_email' => '',
+        'cc2_email' => '',
+        'ki_max_cal_1' => '',
+        'ki_min_cal_2' => '',
+        'ki_min_cal_3' => '',
+        'ki_min_cal_4' => '',
+        'rf_max_mortagestarter_0_5' => '',
+        'rf_min_mortagestarter_1_2' => '',
+        'rf_max_mortagestarter_2_3' => '',
+        'rf_min_mortagestarter_2_3' => '',
+        'ki_max_mortagestarter_3plus' => '',
+        'calculation_1' => '',
+        'calculation_2' => '',
+        'calculation_3' => '',
+        'calculation_4' => '',
+    );
+
+    $default_options = apply_filters('finaforte_options_default_values', $finaforte_options);
+
+    // Update default options
+    update_option('finaforte_options', $default_options);
+
+    // Overwrite global variable when option is update
+    $finaforte_options = finaforte_get_settings();
+}
+
+/**
+ * Get Settings From Option Page
+ * 
+ * Handles to return all settings value
+ * 
+ * @package Fina Forte
+ * @since 1.0
+ */
+function finaforte_get_settings() {
+
+    $options = get_option('finaforte_options');
+    $settings = is_array($options) ? $options : array();
+
+    return $settings;
+}
+
+/**
+ * Escape Tags & Slashes
+ *
+ * Handles escapping the slashes and tags
+ *
+ * @package Fina Forte
+ * @since 1.0
+ */
+function finaforte_esc_attr($data) {
+    return esc_attr(stripslashes($data));
+}
+
+/**
+ * Strip Slashes From Array
+ *
+ * @package Fina Forte
+ * @since 1.0
+ */
+function finaforte_slashes_deep($data = array(), $flag = false) {
+
+    if ($flag != true) {
+        $data = finaforte_nohtml_kses($data);
+    }
+    $data = stripslashes_deep($data);
+    return $data;
+}
+
+/**
+ * Strip Html Tags 
+ * 
+ * It will sanitize text input (strip html tags, and escape characters)
+ * 
+ * @package Fina Forte
+ * @since 1.0
+ */
+function finaforte_nohtml_kses($data = array()) {
+
+    if (is_array($data)) {
+
+        $data = array_map('finaforte_nohtml_kses', $data);
+    } elseif (is_string($data)) {
+        $data = trim($data);
+        $data = wp_filter_nohtml_kses($data);
+    }
+
+    return $data;
+}
+
+/**
+ * Get an array key
+ * @param array value,array
+ * @package Fina Forte
+ * @since 1.0
+ */
+function get_key_of_array($max, array $search_arr) {
+          
+  $newNumbers = array_filter( $search_arr, function ($value) use($min,$max) {
+          $max_val_arr = ($value <= $max);
+          return $max_val_arr;
+  });
+           
+  $newNumbers = max($newNumbers);
+  return array_search($newNumbers,$search_arr);          
+}
+
+/**
+ * Get an option
+ * Looks to see if the specified setting exists, returns default if not
+ * 
+ * @package Fina Forte
+ * @since 1.0
+ */
+function finaforte_get_option($key = '', $default = false) {
+    global $finaforte_options;
+    $finaforte_options = finaforte_get_settings();
+
+    $value = !empty($finaforte_options[$key]) ? $finaforte_options[$key] : $default;
+    $value = apply_filters('finaforte_get_option', $value, $key, $default);
+
+    return apply_filters('finaforte_get_option_' . $key, $value, $key, $default);
+}
+
+function mortgage_basic_form() {
+    echo '<div id="div_finaforte">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">    
+    <style>
+        .error {
+            border: solid 1px red !important;
+        }
+    </style>
+    <div class="main">
+        <div class="container">
+            <div class="login-page">
+                <h1>Benieuwd naar uw maximale hypotheek?</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at massaeget justo consequat fermentum ut nec turpis. Morbi tristique temporpurus, ac lacinia risus tincidunt et. </p>
+                <p class="sub-heading"><i>Na het invullen van uw gegeves kunt U direct starten met berekenen!</i></p>
+                <form class="login-form" name="form_basic" id="form_basic">
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-3 col-form-label">Naam</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="txt_name" id="txt_name" class="form-control" maxlength="256">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Telefoon</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="txt_phone" id="txt_phone" class="form-control" maxlength="256">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-3 col-form-label">E-mail</label>
+                        <div class="col-sm-9">
+                            <input type="email" name="txt_email" id="txt_email" class="form-control" maxlength="256">
+                        </div>
+                    </div>
+                    <div class="form-group row">                        
+                        <label  class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9 tag-line" id="div_privacy">
+                            <label class="login_check">
+                                <input type="checkbox" name="chk_privacy" id="chk_privacy">
+                                <span class="checkmark"></span>
+                            </label>
+                            <p>Ik ga akkoord met het <a href="javascript:;"> privacybeleid</a> van Finaforte.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-yellow" onclick="ajaxSubmit()">Start met berekenen</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="mainpage-footer">
+        <div class="container">
+            <h2>We maken voor u een op maat gemaakte berekening.</h2>
+            <p><a href="#"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i><span>Bekijk een voorbeeldberekening</span></a></p>
+        </div>
+    </div>
+    </div>';
+    ?>
+    <script>
+        function ajaxSubmit() {
+            var newbasicForm = jQuery("#form_basic").serialize();
+            jQuery("#form_basic .error").each(function () {
+                jQuery(this).removeClass("error");
+            });
+            jQuery.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: newbasicForm + '&action=basic_form',
+                success: function (responseText) {
+                    responseText = jQuery.parseJSON(responseText);
+                    if (responseText.status == '1')
+                    {
+                        //alert("Load calculator first page here!");
+                        //loadstart_calculation();
+                        location.reload();
+                    } else {
+                        messageData = responseText.error;
+                        for (i = 0; i < messageData.length; i++)
+                        {
+                            jQuery("#form_basic #" + messageData[i].name).addClass("error");
+                        }
+                    }
+                }
+            });
+            return false;
+        }
+
+        function loadstart_calculation() {
+            jQuery.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: 'action=start_calculationform',
+                success: function (responseText) {
+                    $("#div_finaforte").html(responseText);
+                }
+            });
+        }
+    </script>    
+    <?php
+}
+
+function start_calculation_form() {
+    echo '<div id="div_calculationform">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+   
+    <div class="start-page">
+        <div class="container">
+            <h1>Start met berekenen</h1>
+            <div class="start-data">
+                <div class="row">               
+                    <div class="col-md-8 stat-left">
+                        <div class="start-box" id="div_box1">
+                            <h2 class="big-heading text-center">Wat is uw rechtsvorm?</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="group1" value="in1">
+                                        <span class="checkmark"></span>
+                                        <p><i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i><strong>Freelancer /<br /> Eenmanszaak</strong></p>  
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="group1" value="tv1">                                          
+                                        <span class="checkmark"></span> 
+                                        <p><i class="fa fa-users fa-3x" aria-hidden="true"></i><strong>V.O.F</strong></p>                       
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="group1" value="ph1">                                          
+                                        <span class="checkmark"></span>
+                                        <p><i class="fa fa-building fa-3x" aria-hidden="true"></i><strong>BV / DGA</strong></p>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="in1" class="desc" data-box="1">
+                                <h2 class="big-heading text-center"><span> Hoeveel jaar bent u al ondernemer?</span> <a href="javascript:;" title="" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in." data-original-title="Bruto jaarinkomen:" aria-describedby="popover52623"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h2>
+                                <div class="demo-output demo-output2">
+                                    <input id="single_slider_first" type="hidden" value="0"/>
+                                    <div class="gray-line1"></div>
+                                    <div class="gray-line2"></div>
+                                    <div class="gray-line3"></div>
+                                    <div class="gray-line4"></div>
+                                </div>
+                            </div>
+                            
+                            <div id="tv1" class="desc" data-box="7">
+                                <h2 class="big-heading text-center"><span> Hoeveel jaar bent u al ondernemer?</span> <a href="javascript:;" title="" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in." data-original-title="Bruto jaarinkomen:" aria-describedby="popover52623"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h2>
+                                <div class="demo-output">
+                                    <input class="single-slider" id="single_slider_tv1" type="hidden" value="0"/>
+                                    <div class="gray-line1"></div>
+                                    <div class="gray-line2"></div>
+                                    <div class="gray-line3"></div>
+                                </div>                            
+                            </div>
+                            
+                            <div id="ph1" class="desc" data-box="8">
+                                <h2 class="big-heading text-center"><span> Hoeveel jaar bent u al ondernemer?</span> <a href="javascript:;" title="" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in." data-original-title="Bruto jaarinkomen:" aria-describedby="popover52623"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h2>
+                                <div class="demo-output">
+                                <input class="single-slider" id="single_slider_ph1" type="hidden" value="0"/>
+                                    <div class="gray-line1"></div>
+                                    <div class="gray-line2"></div>
+                                    <div class="gray-line3"></div>
+                                </div>
+                            <div class="check-swich" id="div_holding" style="display:none;">
+                                <strong>Is uw onderneming onderdeel van een holding?</strong>
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="onoffswitch3" class="onoffswitch-checkbox" id="myonoffswitch3">
+                                    <label class="onoffswitch-label" for="myonoffswitch3">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="box-msg2" id="div_holdingtext" style="display:none;"> 
+                                Heeft U meerdere BV\'s of een holding werk-maatschappij structuur? Gebruik dan altijd de gegevens uit de geconsolideerde jaarcijfers.
+                                </div>                              
+                            </div>
+                        </div>
+                        
+                        <div class="start-box" id="div_box2" style="display:none;">
+                            <div class="jaar-value">
+                                <h2 class="big-heading text-center"><span>Inkomensgegevens?</span> <a href="JavaScript:void();" title="" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in." data-original-title="Bruto jaarinkomen:" aria-describedby="popover52623"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h2>
+                                <div class="row">
+                                    <div id="div_forhalfyear" style="width:100%;">
+                                        <h4 class="big-sub-heading big-heading-black text-center" style="display:none;"><span>Eerste 1/2 jaar</span> </h4>
+                                        <div class="row justify-content-md-center">
+                                            <div class="col-md-6 income-data">                                      
+                                                <div class="form-group text-center">
+                                                    <label for="Salaris-1" class="col-form-label ">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">    
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                        <input class="form-control numbers" maxlength="256" dir="rtl" type="text" name="txt_halfyear_first" id="txt_halfyear_first" onkeyup="incomedata_calculation()">
+                                                    </div>                                      
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <label for="Salaris-1" class="col-form-label">Prognose hele jaar</label>    
+                                                    <div class="jaar-value-box">    
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                        <input class="form-control numbers" maxlength="256" dir="rtl" type="text" name="txt_halfyear_second" id="txt_halfyear_second" onkeyup="incomedata_calculation()">  
+                                                    </div>                                  
+                                                </div>
+                                                <h4 class="small-heading">Loon over het afgelopen jaar</h4>
+                                                <div class="form-group text-center">
+                                                    <label for="Salaris-1" class="col-form-label">Volledig jaarsalaris</label>  
+                                                    <div class="jaar-value-box">    
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                        <input class="form-control numbers" maxlength="256" dir="rtl" type="text" name="txt_halfyear_third" id="txt_halfyear_third" onkeyup="incomedata_calculation()">    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="div_winstuitonderneming" style="display:none;">
+                                        <div class="col-md-4" id="div_winstuitonderneming_1">
+                                            <h5>Laatste jaar</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                <div class="jaar-value-box">
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>
+                                                    <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitonderneming_1" id="txt_winstuitonderneming_1" onkeyup="incomedata_calculation()">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="div_winstuitonderneming_2">
+                                            <h5>2 jaar geleden</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                <div class="jaar-value-box">
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>
+                                                    <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitonderneming_2" id="txt_winstuitonderneming_2" onkeyup="incomedata_calculation()">
+                                                </div> 										
+                                            </div>										
+                                        </div>
+                                        <div class="col-md-4" id="div_winstuitonderneming_3">
+                                            <h5>3 jaar geleden</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                <div class="jaar-value-box">
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>
+                                                    <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitonderneming_3" id="txt_winstuitonderneming_3" onkeyup="incomedata_calculation()">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4" id="div_inkomensgegevens_1">
+                                        <h5>Laatste jaar</h5>
+                                        <div class="form-group">
+                                            <label for="Salaris-1" class="col-form-label">Salaris</label>
+                                            <div class="jaar-value-box">    
+                                                <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_salaris[]" id="txt_salaris_1" onkeyup="incomedata_calculation()">
+                                            </div>                                      
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Salaris-1" class="col-form-label">Dividend</label>  
+                                            <div class="jaar-value-box">    
+                                                <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_dividend[]" id="txt_dividend_1" onkeyup="incomedata_calculation()">  
+                                            </div>
+                                        </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Overwinst / Winst BV</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_overwinst[]" id="txt_overwinst_1" onkeyup="incomedata_calculation()">    
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="div_inkomensgegevens_2">
+                                            <h5>2 jaar geleden</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Salaris</label>
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_salaris[]" id="txt_salaris_2" onkeyup="incomedata_calculation()">
+                                                </div>                                      
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Dividend</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_dividend[]" id="txt_dividend_2" onkeyup="incomedata_calculation()">  
+                                                </div>                                  
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Overwinst / Winst BV</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_overwinst[]" id="txt_overwinst_2" onkeyup="incomedata_calculation()">    
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="div_inkomensgegevens_3">
+                                            <h5>3 jaar geleden</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Salaris</label>
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_salaris[]" id="txt_salaris_3" onkeyup="incomedata_calculation()">
+                                                </div>                                      
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Dividend</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_dividend[]" id="txt_dividend_3" onkeyup="incomedata_calculation()">  
+                                                </div>                                  
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Overwinst / Winst BV</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_overwinst[]" id="txt_overwinst_3" onkeyup="incomedata_calculation()">    
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="accordion" class="accordion-value">
+                                    <div class="card">
+                                        <div class="card-header collapsed" data-toggle="collapse" href="#collapse_1">
+                                            <a class="card-title">
+                                               Solvabiliteit toevoegen
+                                            </a>
+                                        </div>
+                                        <div id="collapse_1" class="card-body collapse" data-parent="#accordion" >
+                                            <div class="row">
+                                                <div class="col-md-4" id="div_solvabiliteit_1">
+                                                    <h5>Laatste jaar</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Eigen vermogen</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_eigenvermogen[]" id="txt_eigenvermogen_1" onkeyup="calculate_solvabiliteit()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Balanstotaal</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_balanstotaal[]" id="txt_balanstotaal_1" onkeyup="calculate_solvabiliteit()">  
+                                                        </div>                                  
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-4" id="div_solvabiliteit_2">
+                                                    <h5>2 jaar geleden</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Eigen vermogen</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_eigenvermogen[]" id="txt_eigenvermogen_2" onkeyup="calculate_solvabiliteit()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Balanstotaal</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_balanstotaal[]" id="txt_balanstotaal_2" onkeyup="calculate_solvabiliteit()">  
+                                                        </div>                                  
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-4" id="div_solvabiliteit_3">
+                                                    <h5>3 jaar geleden</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Eigen vermogen</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_eigenvermogen[]" id="txt_eigenvermogen_3" onkeyup="calculate_solvabiliteit()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Balanstotaal</label>
+                                                        <div class="jaar-value-box">
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_balanstotaal[]" id="txt_balanstotaal_3" onkeyup="calculate_solvabiliteit()">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="div_solvabiliteitsscore" class="solvabiliteitsscore" style="display:none;">
+                                                <h6 class="Solvency-total" id="div_solvency_percentage"></h6>
+                                                <div class="radio-color">
+                                                    <div class="colorline1 colorline-box">
+                                                        <h2 class="big-heading text-center">Uw solvabiliteitsscore</h2>	
+                                                        <div class="liner-gradiance">
+                                                            <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                                                <div class="overlay-image" style="left: 65%">
+                                                                    <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="text-center">Uw solvabiliteitscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                                                    </div>					
+                                                </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_2">
+                                                <a class="card-title">
+                                                  Liquiditeit toevoegen
+                                                </a>
+                                            </div>
+                                            <div id="collapse_2" class="card-body collapse" data-parent="#accordion" >
+                                               <div class="row">
+                                                    <div class="col-md-4" id="div_liquiditeit_1">
+                                                        <h5>Laatste jaar</h5>
+                                                        <div class="form-group">
+                                                            <label for="Salaris-1" class="col-form-label">Vlottende activa</label>
+                                                            <div class="jaar-value-box">    
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_vlottendeactiva[]" id="txt_vlottendeactiva_1" onkeyup="calculate_liquiditeit()">
+                                                            </div>                                      
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="Salaris-1" class="col-form-label">Kort vreemd vermogen</label>  
+                                                            <div class="jaar-value-box">    
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_kortvreemdvermogen[]" id="txt_kortvreemdvermogen_1" onkeyup="calculate_liquiditeit()">  
+                                                            </div>                                  
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4" id="div_liquiditeit_2">
+                                                        <h5>2 jaar geleden</h5>
+                                                        <div class="form-group">
+                                                            <label for="Salaris-1" class="col-form-label">Vlottende activa</label>
+                                                            <div class="jaar-value-box">    
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_vlottendeactiva[]" id="txt_vlottendeactiva_2" onkeyup="calculate_liquiditeit()">
+                                                            </div>                                      
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="Salaris-1" class="col-form-label">Kort vreemd vermogen</label>  
+                                                            <div class="jaar-value-box">    
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_kortvreemdvermogen[]" id="txt_kortvreemdvermogen_2" onkeyup="calculate_liquiditeit()">  
+                                                            </div>                                  
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4" id="div_liquiditeit_3">
+                                                        <h5>3 jaar geleden</h5>
+                                                        <div class="form-group">
+                                                            <label for="Salaris-1" class="col-form-label">Vlottende activa</label>
+                                                            <div class="jaar-value-box">    
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_vlottendeactiva[]" id="txt_vlottendeactiva_3" onkeyup="calculate_liquiditeit()">
+                                                            </div>                                      
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="Salaris-1" class="col-form-label">Kort vreemd vermogen</label>  
+                                                            <div class="jaar-value-box">    
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_kortvreemdvermogen[]" id="txt_kortvreemdvermogen_3" onkeyup="calculate_liquiditeit()">  
+                                                            </div>                                  
+                                                        </div>
+                                                    </div>
+                                                    <div id="div_liquiditeitsscore" class="liquiditeitsscore" style="display:none;">
+                                                    <h6 class="Solvency-total" id="div_liquidity_percentage"></h6>
+                                                    <div class="radio-color">
+                                                        <div class="colorline1 colorline-box">
+                                                            <h2 class="big-heading text-center">Uw liquiditeitsscore</h2>	
+                                                            <div class="liner-gradiance">
+                                                                <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                                                    <div class="overlay-image" style="left: 65%">
+                                                                        <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p class="text-center">Uw liquiditeitsscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                                                        </div>					
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>                                      
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="start-box" id="div_box3" style="display:none;">
+                                <h2 class="big-heading text-center">Heeft U een partner?</h2>
+                                <div class="parner-radio">
+                                    <label class="partner">Ja
+                                        <input type="radio" name="rdo_partner" id="rdo_partner" value="1" onclick="partner_selection()">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class="partner">Nee
+                                        <input type="radio" name="rdo_partner" value="2" onclick="partner_selection()">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="start-box" id="div_box4" style="display:none;">
+                            <h2 class="big-heading text-center">Gegevens van uw partner?</h2>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="rdo_partnertype" value="1">
+                                        <span class="checkmark"></span>
+                                        <p><i class="fa fa-eur fa-3x" aria-hidden="true"></i><strong>Loondienst</strong></p>    
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="rdo_partnertype" value="2">
+                                        <span class="checkmark"></span>
+                                        <p><i class="fa fa-user-circle-o fa-3x" aria-hidden="true"></i><strong>Freelancer /<br /> Eenmanszaak</strong></p>  
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="rdo_partnertype" value="3">                                          
+                                        <span class="checkmark"></span> 
+                                        <p><i class="fa fa-users fa-3x" aria-hidden="true"></i><strong>V.O.F</strong>   </p>                        
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="rechtsvorm">                                          
+                                        <input type="radio" name="rdo_partnertype" value="4">                                          
+                                        <span class="checkmark"></span>
+                                        <p><i class="fa fa-building fa-3x" aria-hidden="true"></i><strong>BV / DGA</strong></p>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="div_box4_1" style="display:none;">
+                                <h2 class="big-heading text-center"><span> Hoeveel jaar bent u al ondernemer?</span> <a href="javascript:;" title="" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in." data-original-title="Bruto jaarinkomen:" aria-describedby="popover52623"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h2>
+                                <div class="demo-output" id="div_rangeslider">
+                                    <input id="single_slider_2" type="hidden" value="0"/>
+                                    <div class="gray-line1"></div>
+                                    <div class="gray-line2"></div>
+                                    <div class="gray-line3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="start-box" id="div_box5" style="display:none;">
+                            <div class="jaar-value">
+                                    <div class="row">
+                                        <div id="div_forhalfyearp" style="width:100%;display:none;">
+                                            <h4 class="big-sub-heading big-heading-black text-center" style="display:none;"><span>Eerste 1/2 jaar</span> </h4>
+                                            <div class="row justify-content-md-center">
+                                                <div class="col-md-6 income-data">                                      
+                                                    <div class="form-group text-center">
+                                                        <label for="Salaris-1" class="col-form-label ">Winst uit onderneming</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input class="form-control numbers" maxlength="256" dir="rtl" type="text" name="txt_halfyearp_first" id="txt_halfyearp_first" onkeyup="incomedata_calculation()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group text-center">
+                                                        <label for="Salaris-1" class="col-form-label">Prognose hele jaar</label>    
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input class="form-control numbers" maxlength="256" dir="rtl" type="text" name="txt_halfyearp_second" id="txt_halfyearp_second" onkeyup="incomedata_calculation()">  
+                                                        </div>                                  
+                                                    </div>
+                                                    <h4 class="small-heading">Loon over het afgelopen jaar</h4>
+                                                    <div class="form-group text-center">
+                                                        <label for="Salaris-1" class="col-form-label">Volledig jaarsalaris</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input class="form-control numbers" maxlength="256" dir="rtl" type="text" name="txt_halfyearp_third" id="txt_halfyearp_third" onkeyup="incomedata_calculation()">    
+                                                        </div>                                  
+                                                    </div>
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                        <div class="row" id="div_winstuitondernemingp" style="display:none;">
+                                            <div class="col-md-4" id="div_winstuitondernemingp_1">
+                                                <h5>Laatste jaar</h5>
+                                                <div class="form-group">
+                                                    <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                                        <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitondernemingp_1" id="txt_winstuitondernemingp_1" onkeyup="incomedata_calculation()">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4" id="div_winstuitondernemingp_2">
+                                                <h5>2 jaar geleden</h5>
+                                                <div class="form-group">
+                                                    <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                                        <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitondernemingp_2" id="txt_winstuitondernemingp_2" onkeyup="incomedata_calculation()">
+                                                    </div> 										
+                                                </div>										
+                                            </div>
+                                            <div class="col-md-4" id="div_winstuitondernemingp_3">
+                                                <h5>3 jaar geleden</h5>
+                                                <div class="form-group">
+                                                    <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                                        <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitondernemingp_3" id="txt_winstuitondernemingp_3" onkeyup="incomedata_calculation()">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="start-box" id="div_loondienst">
+                                            <div class="jaar-value">                                            
+                                                <h4 class="big-sub-heading big-heading-black text-center"><span>Huidige salaris</span> </h4>
+                                                <h6 class="text-center">Jaarsalaris incl. bonussen / vakanitegeld / overwerk</h6>								
+                                                <div class="row justify-content-md-center">
+                                                    <div class="col-md-6 income-data">
+                                                        <div class="form-group text-center">											
+                                                            <div class="jaar-value-box">	
+                                                                <i class="fa fa-eur" aria-hidden="true"></i>										
+                                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_loondienst" id="txt_loondienst" onkeyup="incomedata_calculation()">
+                                                            </div>									
+                                                        </div>
+                                                    </div>									
+                                                </div>								
+                                            </div>
+                                        </div>
+                                        <div class="row" id="div_winstuitondernemingp" style="display:none;">
+                                            <div class="col-md-4" id="div_winstuitondernemingp_1">
+                                                <h5>Laatste jaar</h5>
+                                                <div class="form-group">
+                                                    <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                                        <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitondernemingp_1" id="txt_winstuitondernemingp_1" onkeyup="incomedata_calculation()">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4" id="div_winstuitondernemingp_2">
+                                                <h5>2 jaar geleden</h5>
+                                                <div class="form-group">
+                                                    <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                                        <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitondernemingp_2" id="txt_winstuitondernemingp_2" onkeyup="incomedata_calculation()">
+                                                    </div> 										
+                                                </div>										
+                                            </div>
+                                            <div class="col-md-4" id="div_winstuitondernemingp_3">
+                                                <h5>3 jaar geleden</h5>
+                                                <div class="form-group">
+                                                    <label for="Salaris-1" class="col-form-label">Winst uit onderneming</label>
+                                                    <div class="jaar-value-box">
+                                                        <i class="fa fa-eur" aria-hidden="true"></i>
+                                                        <input class="form-control numbers" dir="rtl" maxlength="256" type="text" name="txt_winstuitondernemingp_3" id="txt_winstuitondernemingp_3" onkeyup="incomedata_calculation()">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="div_inkomensgegevensp_1">
+                                        <h5>Laatste jaar</h5>
+                                        <div class="form-group">
+                                            <label for="Salaris-1" class="col-form-label">Salaris</label>
+                                            <div class="jaar-value-box">    
+                                                <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_salarisp[]" id="txt_salarisp_1" onkeyup="incomedata_calculation()">
+                                            </div>                                      
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Salaris-1" class="col-form-label">Dividend</label>  
+                                            <div class="jaar-value-box">    
+                                                <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_dividendp[]" id="txt_dividendp_1" onkeyup="incomedata_calculation()">  
+                                            </div>
+                                        </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Overwinst / Winst BV</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_overwinstp[]" id="txt_overwinstp_1" onkeyup="incomedata_calculation()">    
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="div_inkomensgegevensp_2">
+                                            <h5>2 jaar geleden</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Salaris</label>
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_salarisp[]" id="txt_salarisp_2" onkeyup="incomedata_calculation()">
+                                                </div>                                      
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Dividend</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_dividendp[]" id="txt_dividendp_2" onkeyup="incomedata_calculation()">  
+                                                </div>                                  
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Overwinst / Winst BV</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_overwinstp[]" id="txt_overwinstp_2" onkeyup="incomedata_calculation()">    
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="div_inkomensgegevensp_3">
+                                            <h5>3 jaar geleden</h5>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Salaris</label>
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_salarisp[]" id="txt_salarisp_3" onkeyup="incomedata_calculation()">
+                                                </div>                                      
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Dividend</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_dividendp[]" id="txt_dividendp_3" onkeyup="incomedata_calculation()">  
+                                                </div>                                  
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Salaris-1" class="col-form-label">Overwinst / Winst BV</label>  
+                                                <div class="jaar-value-box">    
+                                                    <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                    <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_overwinstp[]" id="txt_overwinstp_3" onkeyup="incomedata_calculation()">    
+                                                </div>                                  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="accordion" class="accordion-value">
+                                    <div class="card">
+                                        <div class="card-header collapsed" data-toggle="collapse" href="#collapse_11">
+                                            <a class="card-title">
+                                               Solvabiliteit toevoegen
+                                            </a>
+                                        </div>
+                                        <div id="collapse_11" class="card-body collapse" data-parent="#accordion" >
+                                            <div class="row">
+                                                <div class="col-md-4" id="div_solvabiliteitp_1">
+                                                    <h5>Laatste jaar</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Eigen vermogen</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_eigenvermogenp[]" id="txt_eigenvermogenp_1" onkeyup="calculate_solvabiliteitp()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Balanstotaal</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_balanstotaalp[]" id="txt_balanstotaalp_1" onkeyup="calculate_solvabiliteitp()">  
+                                                        </div>                                  
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-4" id="div_solvabiliteitp_2">
+                                                    <h5>2 jaar geleden</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Eigen vermogen</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_eigenvermogenp[]" id="txt_eigenvermogenp_2" onkeyup="calculate_solvabiliteitp()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Balanstotaal</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_balanstotaalp[]" id="txt_balanstotaalp_2" onkeyup="calculate_solvabiliteitp()">  
+                                                        </div>                                  
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-4" id="div_solvabiliteitp_3">
+                                                    <h5>3 jaar geleden</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Eigen vermogen</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_eigenvermogenp[]" id="txt_eigenvermogenp_3" onkeyup="calculate_solvabiliteitp()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Balanstotaal</label>
+                                                        <div class="jaar-value-box">
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_balanstotaalp[]" id="txt_balanstotaalp_3" onkeyup="calculate_solvabiliteitp()">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="div_solvabiliteitsscorep" class="solvabiliteitsscore" style="display:none;">
+                                                    <h6 class="Solvency-total" id="div_solvencyp_percentage"></h6>
+                                                    <div class="radio-color">
+                                                        <div class="colorline1 colorline-box">
+                                                            <h2 class="big-heading text-center">Uw solvabiliteitsscore</h2>	
+                                                            <div class="liner-gradiance">
+                                                                <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                                                    <div class="overlay-image" style="left: 65%">
+                                                                        <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p class="text-center">Uw solvabiliteitscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                                                        </div>					
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_22">
+                                            <a class="card-title">
+                                              Liquiditeit toevoegen
+                                            </a>
+                                        </div>
+                                        <div id="collapse_22" class="card-body collapse" data-parent="#accordion" >
+                                           <div class="row">
+                                                <div class="col-md-4" id="div_liquiditeitp_1">
+                                                    <h5>Laatste jaar</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Vlottende activa</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_vlottendeactivap[]" id="txt_vlottendeactivap_1" onkeyup="calculate_liquiditeitp()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Kort vreemd vermogen</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_kortvreemdvermogenp[]" id="txt_kortvreemdvermogenp_1" onkeyup="calculate_liquiditeitp()">  
+                                                        </div>                                  
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4" id="div_liquiditeitp_2">
+                                                    <h5>2 jaar geleden</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Vlottende activa</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_vlottendeactivap[]" id="txt_vlottendeactivap_2" onkeyup="calculate_liquiditeitp()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Kort vreemd vermogen</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_kortvreemdvermogenp[]" id="txt_kortvreemdvermogenp_2" onkeyup="calculate_liquiditeitp()">  
+                                                        </div>                                  
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4" id="div_liquiditeitp_3">
+                                                    <h5>3 jaar geleden</h5>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Vlottende activa</label>
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                    
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_vlottendeactivap[]" id="txt_vlottendeactivap_3" onkeyup="calculate_liquiditeitp()">
+                                                        </div>                                      
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="Salaris-1" class="col-form-label">Kort vreemd vermogen</label>  
+                                                        <div class="jaar-value-box">    
+                                                            <i class="fa fa-eur" aria-hidden="true"></i>                                        
+                                                            <input type="text" class="form-control numbers" dir="rtl" maxlength="256" name="txt_kortvreemdvermogenp[]" id="txt_kortvreemdvermogenp_3" onkeyup="calculate_liquiditeitp()">  
+                                                        </div>                                  
+                                                    </div>
+                                                </div>
+                                                <div id="div_liquiditeitsscorep" class="liquiditeitsscore" style="display:none;">
+                                                    <h6 class="Solvency-total" id="div_liquidityp_percentage"></h6>
+                                                    <div class="radio-color">
+                                                        <div class="colorline1 colorline-box">
+                                                            <h2 class="big-heading text-center">Uw liquiditeitsscore</h2>	
+                                                            <div class="liner-gradiance">
+                                                                <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                                                    <div class="overlay-image" style="left: 65%">
+                                                                        <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <p class="text-center">Uw liquiditeitsscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                                                        </div>					
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>                    
+                    <div class="col-md-4 start-right">                      
+                        <div class="sidebar-item">
+                        <div class="make-me-sticky">
+                            <button class="btn close-sidebar"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+                                <div class="start-box">
+                                    <h2 class="big-heading">Overzicht</h2>
+                                    <div class="final-value" id="div_overzicht" style="display:none;">
+                                        <ul>
+                                            <li>
+                                                <h3>Uw totale toetsinkomen</h3>
+                                                <h4>&euro; <span>99.999</span></h4>
+                                            </li>
+                                            <li>
+                                                <h3>Maximale hypotheek</h3>
+                                                <h4>&euro; <span>999.999</span></h4>
+                                            </li>
+                                            <li>
+                                                <h3>Maandlasten</h3>
+                                                <h4>&euro; <span>91.999</span></h4>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <h4><span> Op basis van 3,01% toetsrente</span> <a href="javascript:;" title="" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in." data-original-title="Bruto jaarinkomen:" aria-describedby="popover52623"><i class="fa fa-info-circle" aria-hidden="true"></i></a></h4>
+                                    <p class="box-msg" id="p_notcompleted">Uw berekening is nog niet helemaal accuraat. </p>
+                                    <a href="javascript:;" class="btn btn-primary btn-yellow" onclick="total_calculation()">Bekijk totale berekening</a>
+                                </div>
+                                <div class="right-desc">
+                                    <h3 class="big-sub-heading">Wil je advies of heb je vragen?</h3>
+                                    <div class="user-desc">
+                                        <p>Bel met een van onze adviseurs<span> 088 - 543 4564</span></p>
+                                    </div>
+                                    <div class="user-image">                                    
+                                        <img src="' . FINAFORTE_URL . '/assets/images/user.png" alt="user name" title="user name">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-yellow sidebar-hide-show">Overzicht Value</button>
+        </div>
+    </div>
+    <input type="hidden" name="h_yearselection" id="h_yearselection" value="0" />
+    <input type="hidden" name="h_typeselection" id="h_typeselection" />
+    <input type="hidden" name="h_partneryearselection" id="h_partneryearselection" value="1" />
+    <input type="hidden" name="h_partnertypeselection" id="h_partnertypeselection" />
+    <input type="hidden" name="h_solvabiliteit" id="h_solvabiliteit" />
+    <input type="hidden" name="h_solvabiliteitp" id="h_solvabiliteitp" />
+    <input type="hidden" name="h_liquiditeit" id="h_liquiditeit" />
+    <input type="hidden" name="h_liquiditeitp" id="h_liquiditeitp" />
+    <input type="hidden" name="h_totalincome" id="h_totalincome" />
+    <input type="hidden" name="h_totalincomep" id="h_totalincomep" />
+    <input type="hidden" name="h_max_hypotheek" id="h_max_hypotheek" />
+    <input type="hidden" name="h_maandlasten" id="h_maandlasten" />
+    <input type="hidden" name="h_totalincome_sum" id="h_totalincome_sum" />
+    </div>';
+    ?>
+    <script type="text/javascript">
+        $(".sidebar-hide-show").click(function () {
+            $(".start-right").show();
+            $("body").addClass("static-sidebar");
+        });
+        $(".close-sidebar").click(function () {
+            $(".start-right").hide();
+            $("body").removeClass("static-sidebar");
+        });
+        function total_calculation() {
+            var totalincome         = $("#h_totalincome").val();
+            var totalincomep        = $("#h_totalincomep").val();
+            var solvabiliteit       = $("#h_solvabiliteit").val();
+            var solvabiliteitp      = $("#h_solvabiliteitp").val();
+            var liquiditeit         = $("#h_liquiditeit").val();
+            var liquiditeitp        = $("#h_liquiditeitp").val();
+            var maximale_hypotheek  = $("#h_max_hypotheek").val();
+            var maandlasten         = $("#h_maandlasten").val();
+            var totalincome_sum     = $("#h_totalincome_sum").val();
+
+            $.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: 'action=view_total_calculation&totalincome=' + totalincome + '&totalincomep=' + totalincomep + '&solvabiliteit=' + solvabiliteit +
+                        '&solvabiliteitp=' + solvabiliteitp + '&liquiditeit=' + liquiditeit + '&liquiditeitp=' + liquiditeitp + '&maximale_hypotheek=' + maximale_hypotheek + '&maandlasten=' + maandlasten + '&totalincome_sum=' + totalincome_sum,
+                success: function (responseText) {
+                    location.reload();
+                }
+            });
+        }
+    </script>
+    <?php
+}
+
+function basic_form() {
+    global $wpdb;
+
+    $responseArray = array();
+
+    if ($_POST['txt_name'] == '' || trim($_POST['txt_name']) == '') {
+        $error = array();
+        $error['name'] = 'txt_name';
+        $errorArray[] = $error;
+    }
+    if ($_POST['txt_phone'] == '' || trim($_POST['txt_phone']) == '') {
+        $error = array();
+        $error['name'] = 'txt_phone';
+        $errorArray[] = $error;
+    }
+    if ($_POST['txt_email'] == '' || trim($_POST['txt_email']) == '') {
+        $error = array();
+        $error['name'] = 'txt_email';
+        $errorArray[] = $error;
+    }
+    if (!isset($_POST['chk_privacy'])) {
+        $error = array();
+        $error['name'] = 'div_privacy';
+        $errorArray[] = $error;
+    }
+    if (count($errorArray) == 0) {
+        $_SESSION['finaforte']['basic_form'] = "1";
+        $_SESSION['finaforte']['name'] = trim($_POST['txt_name']);
+        $_SESSION['finaforte']['phone'] = trim($_POST['txt_phone']);
+        $_SESSION['finaforte']['email'] = trim($_POST['txt_email']);
+        echo json_encode(array("status" => 1, "message" => "Load calculator first page here!"));
+    } else {
+        $responseArray['status'] = 0;
+        $responseArray['error'] = $errorArray;
+        echo json_encode($responseArray);
+        exit;
+    }
+    die;
+}
+
+add_action('wp_ajax_basic_form', 'basic_form');
+add_action('wp_ajax_nopriv_basic_form', 'basic_form');
+
+function start_calculationform() {
+    start_calculation_form();
+    die;
+}
+
+add_action('wp_ajax_start_calculationform', 'start_calculationform');
+add_action('wp_ajax_nopriv_start_calculationform', 'start_calculationform');
+
+function view_total_calculation() {
+    $_SESSION['finaforte']['view_totalcalculation'] = "1";
+    $_SESSION['finaforte']['totalincome']       = $_POST['totalincome'];
+    $_SESSION['finaforte']['totalincomep']      = $_POST['totalincomep'];
+    $_SESSION['finaforte']['solvabiliteit']     = $_POST['solvabiliteit'];
+    $_SESSION['finaforte']['solvabiliteitp']    = $_POST['solvabiliteitp'];
+    $_SESSION['finaforte']['liquiditeit']       = $_POST['liquiditeit'];
+    $_SESSION['finaforte']['liquiditeitp']      = $_POST['liquiditeitp'];
+    $_SESSION['finaforte']['maximale_hypotheek']  = $_POST['maximale_hypotheek'];
+    $_SESSION['finaforte']['maandlasten']       = $_POST['maandlasten'];
+    $_SESSION['finaforte']['totalincome_sum']   = $_POST['totalincome_sum'];
+}
+
+add_action('wp_ajax_view_total_calculation', 'view_total_calculation');
+add_action('wp_ajax_nopriv_view_total_calculation', 'view_total_calculation');
+
+function backto_calculator() {
+
+    unset($_SESSION['finaforte']['view_totalcalculation']);
+}
+
+add_action('wp_ajax_backto_calculator', 'backto_calculator');
+add_action('wp_ajax_nopriv_backto_calculator', 'backto_calculator');
+
+function receive_by_email() {
+    $_SESSION['finaforte']['send_email'] = "1";
+}
+
+add_action('wp_ajax_receive_by_email', 'receive_by_email');
+add_action('wp_ajax_nopriv_receive_by_email', 'receive_by_email');
+
+function total_calculation_form() {
+
+    $solvability_graph = "";
+    $p_solvability_graph = "";
+
+    if (isset($_SESSION['finaforte']['solvabiliteit']) && $_SESSION['finaforte']['solvabiliteit'] != '') {
+        $solvability = $_SESSION['finaforte']['solvabiliteit'];
+        if ($solvability <= 50) {
+            $solvability_graph = ($solvability * 33) / 50;
+        } else if ($solvability <= 85) {
+            $solvability_graph = ($solvability * 66) / 85;
+        } else {
+            $solvability_graph = ($solvability * 67) / 86;
+        }
+        $solvability_graph = round($solvability_graph, 2);
+    }
+    if (isset($_SESSION['finaforte']['solvabiliteitp']) && $_SESSION['finaforte']['solvabiliteitp'] != '') {
+        $solvability = $_SESSION['finaforte']['solvabiliteitp'];
+        if ($solvability <= 50) {
+            $p_solvability_graph = ($solvability * 33) / 50;
+        } else if ($solvability <= 85) {
+            $p_solvability_graph = ($solvability * 66) / 85;
+        } else {
+            $p_solvability_graph = ($solvability * 67) / 86;
+        }
+        $p_solvability_graph = round($p_solvability_graph, 2);
+    }
+
+    $liquidity_graph = "";
+    $p_liquidity_graph = "";
+    
+    if (isset($_SESSION['finaforte']['liquiditeit']) && $_SESSION['finaforte']['liquiditeit'] != '') {
+        $liquidity = $_SESSION['finaforte']['liquiditeit'];
+        if ($liquidity == 1) {
+            $liquidity_graph = 50;
+        } else if ($liquidity < 1) {
+            $liquidity_graph = $liquidity * 50;
+        } else {
+            $max_value = ceil($liquidity);
+            $liquidity_graph = ($liquidity * 100) / $max_value;
+        }
+        $liquidity_graph = round($liquidity_graph, 2);
+    }
+    if (isset($_SESSION['finaforte']['liquiditeitp']) && $_SESSION['finaforte']['liquiditeitp'] != '') {
+        $liquidity = $_SESSION['finaforte']['liquiditeitp'];
+        if ($liquidity == 1) {
+            $p_liquidity_graph = 50;
+        } else if ($liquidity < 1) {
+            $p_liquidity_graph = $liquidity * 50;
+        } else {
+            $max_value = ceil($liquidity);
+            $p_liquidity_graph = ($liquidity * 100) / $max_value;
+        }
+        $p_liquidity_graph = round($p_liquidity_graph, 2);
+    }
+
+    $form_html = '<div class="start-pag start-total-page">
+        <div class="container">
+            <h1>De totale berekening</h1>
+        </div>
+        <div class="total-page">
+            <div class="container">
+                <a href="javascript:;" onclick="backto_calculator()" class="back-page"> <i class="fa fa-arrow-left" aria-hidden="true"></i><span>Terug naar berekenaar</span></a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="start-box plr0">
+                            <h2 class="big-heading">Overzicht</h2>
+                            <div class="final-value">
+                                <ul>
+                                    <li>
+                                        <h3>Uw totale toetsinkomen</h3>
+                                        <h4>€ <span>' . $_SESSION['finaforte']['totalincome_sum'] . '</span></h4>
+                                    </li>
+                                    <li>
+                                        <h3>Maximale hypotheek <span>Bij toetsrente <i>3,01</i>%</span></h3>
+                                        <h4>€ <span>'.$_SESSION['finaforte']['maximale_hypotheek'].'</span></h4>
+                                    </li>
+                                    <li>
+                                        <h3>Maandlasten max. hypotheek</h3>
+                                        <h4>€ <span>'.$_SESSION['finaforte']['maandlasten'].'</span></h4>
+                                    </li>
+                                </ul>
+                            </div>							
+                        </div>
+                    </div>
+                    <div class="col-md-6 total-desc">
+                        <h3 class="big-heading">Gratis advies van Finaforte</h3>
+                        <p>Informatie verstrekt in deze berekening is op basis van de door U ingevoerde informatie. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at massa eget justo consequat fermentum ut necturpis. Morbi tristique tempor.</p>
+                        <a href="javascript:;" onclick="receive_by_email()" class="btn btn-primary btn-yellow">Ontvang per e-mail</a>
+                    </div>
+                </div>
+                <div class="radio-color row">';
+
+                $sol_col = ($p_solvability_graph != '') ? '6' : '12';                 
+                if ($solvability_graph != '') {
+                                      
+                    $form_html.='<div class="col-md-'.$sol_col.' colorline1 colorline-box">
+                        <h2 class="big-heading text-center">Uw solvabiliteitsscore</h2>	
+                        <div class="liner-gradiance">
+                            <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                <div class="overlay-image" style="left: ' . $solvability_graph . '%">
+                                    <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center">Uw solvabiliteitscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                    </div>';
+                } 
+                if ($p_solvability_graph != '' ) {
+                    $form_html.='<div class="col-md-'.$sol_col.' colorline1 colorline-box">
+                        <h2 class="big-heading text-center">Uw solvabiliteitsscore</h2> 
+                        <div class="liner-gradiance">
+                            <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                <div class="overlay-image" style="left: ' . $p_solvability_graph . '%">
+                                    <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center">Uw solvabiliteitscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                    </div>';
+                } 
+                $liq_col = ($p_liquidity_graph != '') ? '6' : '12';
+                if ($liquidity_graph != '') {
+                    $form_html.='<div class="col-md-'.$liq_col.' colorline2 colorline-box" style="clear:both; float:left;">
+                        <h2 class="big-heading text-center">Uw liquiditeitsscore</h2>	
+                        <div class="liner-gradiance">
+                            <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                <div class="overlay-image" style="left: ' . $liquidity_graph . '%">
+                                    <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center">Uw liquiditeitsscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                    </div>';
+                }
+                 if ($p_liquidity_graph != '') {
+                    $form_html.='<div class="col-md-'.$liq_col.' colorline2 colorline-box" style="clear:both; float:left;">
+                        <h2 class="big-heading text-center">Uw liquiditeitsscore</h2>   
+                        <div class="liner-gradiance">
+                            <div class="more-then-color" style="background: #ff0100;background: -moz-linear-gradient(right, #ff0100 0%, #ff8600 33%, #dada00 66%, #92ff00 100%); background: -webkit-linear-gradient(right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); background: linear-gradient(to right, #ff0100 0%,#ff8600 33%,#dada00 66%,#92ff00 100%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=\'#ff0100\', endColorstr=\'#92ff00\',GradientType=0);">
+                                <div class="overlay-image" style="left: ' . $p_liquidity_graph . '%">
+                                    <img src="' . FINAFORTE_URL . '/assets/images/line-arrow.png">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center">Uw liquiditeitsscore is niet helemaal naar ratio. Let er op bij uw aanvraag.</p>
+                    </div>';
+                }
+                $totalincome_sum = $_SESSION['finaforte']['totalincome_sum'];
+                $maximale_hypotheek = $_SESSION['finaforte']['maximale_hypotheek'];
+                $bruto_maandlast = $_SESSION['finaforte']['maandlasten'];
+                $rent1 = finaforte_esc_attr(finaforte_get_option('calculation_1'));
+                $rent2 = finaforte_esc_attr(finaforte_get_option('calculation_2'));
+                $rent3 = finaforte_esc_attr(finaforte_get_option('calculation_3'));
+                $rent4 = finaforte_esc_attr(finaforte_get_option('calculation_4'));
+
+                $hypo_ber_rent_1 = $maximale_hypotheek * ($rent1/100);
+                $hypo_ber_rent_1 = round($hypo_ber_rent_1,4);
+                $aflossing_1     = $hypo_ber_rent_1-$bruto_maandlast;
+
+                $hypo_ber_rent_2 = $maximale_hypotheek * ($rent2/100);
+                $hypo_ber_rent_2 = round($hypo_ber_rent_2,4);
+                $aflossing_2     = $hypo_ber_rent_2-$bruto_maandlast;
+
+                $maximale_hypotheek_3 = finaforte_esc_attr(finaforte_get_option('maximale_hypotheek_3'));
+                $hypo_ber_rent_3 = $maximale_hypotheek_3 * ($rent3/100);
+                $maandrente_3    = ($rent3/100)/12;
+                $hypo_ber_rent_3 = round($hypo_ber_rent_3,4);
+                $bruto_maandlast_3   = $maximale_hypotheek_3 * ($maandrente_3 / (1- (pow((1 + $maandrente_3),-120) ))); 
+                $bruto_maandlast_3 = round($bruto_maandlast_3,4);
+                $aflossing_3     = $hypo_ber_rent_3-$bruto_maandlast_3;
+                
+                $intrest_ammt_4  = maximale_hypotheek_val($rent4, $totalincome_sum);
+                $bruto_maandlast_4  = $intrest_ammt_4/12;
+                $maandrente_4             = ($rent4/100)/12;
+                $maximale_hypotheek_4     = $bruto_maandlast_4/($maandrente_4 / (1- (pow((1 + $maandrente_4),-60) ))); 
+                $hypo_ber_rent_4 = $maximale_hypotheek_4 * ($rent4/100);
+                $hypo_ber_rent_4 = round($hypo_ber_rent_4,4);
+                $aflossing_4     = $hypo_ber_rent_4-$bruto_maandlast_4;
+
+
+                $form_html.='</div>
+                <hr>
+                <div class="final-value2">
+                    <h2 class="big-heading">De uitgebreide berekening</h2>	
+                    <ul>
+                        <li>							
+                            <strong>Uw totale toetsinkomen</strong>
+                            <p>€ <span>' . $_SESSION['finaforte']['totalincome'] . '</span></p>							
+                        </li>						
+                        <li>
+                            <strong>Toetsinkomen partner</strong>
+                            <p>€ <span>'.$_SESSION['finaforte']['totalincomep'].'</span> 
+                                <a href="javascript:;" title="Bruto jaarinkomen:" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in."><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12">
+                        <div class="total-box">
+                            <h3 class="big-heading">Hypotheekberekening 1</h3>
+                            <h4>(10 jaar rentevast)</h4>
+                            <ul class="head-value">
+                                <li><strong>Maximale hypotheek</strong> <p>€ <span>'.$_SESSION['finaforte']['maximale_hypotheek'].'</span></p></li>
+                            </ul>
+                            <ul class="body-value">
+                                <li><strong>Rente (toegep. rente '.$rent1.'%)</strong> <p>€ <span>'.$hypo_ber_rent_1.'</span></p></li>
+                                <li><strong>Aflossing</strong> <p>€ <span>'.$aflossing_1.'</span></p></li>
+                                <li><strong>Bruto maandlast</strong><p>€ <span>'.$_SESSION['finaforte']['maandlasten'].'</span></p></li>
+                                <li><strong>Belastingteruggave</strong> <p>€ <span>500</span></p></li>
+                            </ul>
+                            <ul class="footer-value">
+                                <li><strong>Netto per maand</strong> <p>€ <span>1.499</span></p></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <div class="total-box">
+                            <h3 class="big-heading">Hypotheekberekening 2</h3>
+                            <h4>(10 jaar rentevast)</h4>
+                            <ul class="head-value">
+                                <li><strong>Minimale hypotheek</strong> <p>€ <span>'.$_SESSION['finaforte']['maximale_hypotheek'].'</span></p></li>
+                            </ul>
+                            <ul class="body-value">
+                                <li><strong>Rente (toegep. rente '.$rent2.'%)</strong> <p>€ <span>'.$hypo_ber_rent_2.'</span></p></li>
+                                <li><strong>Aflossing</strong> <p>€ <span>'.$aflossing_2.'</span></p></li>
+                                <li><strong>Bruto maandlast</strong><p>€ <span>'.$_SESSION['finaforte']['maandlasten'].'</span></p></li>
+                                <li><strong>Belastingteruggave</strong> <p>€ <span>450</span></p></li>
+                            </ul>
+                            <ul class="footer-value">
+                                <li><strong>Netto per maand</strong> <p>€ <span>1.050</span></p></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <div class="total-box">
+                            <h3 class="big-heading">Hypotheekberekening 3 met NHG</h3>
+                            <h4>(10 jaar rentevast)</h4>
+                            <ul class="head-value">
+                                <li><strong>Maximale hypotheek</strong> <p>€ <span>'.$maximale_hypotheek_3.'</span></p></li>
+                            </ul>
+                            <ul class="body-value">
+                                <li><strong>Rente (toegep. rente '.$rent3.'%)</strong> <p>€ <span>'.$hypo_ber_rent_3.'</span></p></li>
+                                <li><strong>Aflossing</strong> <p>€ <span>'.$aflossing_3.'</span></p></li>
+                                <li><strong>Bruto maandlast</strong><p>€ <span>'.$bruto_maandlast_3.'</span></p></li>
+                                <li><strong>Belastingteruggave</strong> <p>€ <span>500</span></p></li>
+                            </ul>
+                            <ul class="footer-value">
+                                <li><strong>Netto per maand</strong> <p>€ <span>1.050</span></p></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <div class="total-box">
+                            <h3 class="big-heading">Hypotheekberekening 4 - (5 jr. RVS)</h3>
+                            <h4>(5 jaar rentevast)</h4>
+                            <ul class="head-value">
+                                <li><strong>Maximale hypotheek</strong> <p>€ <span>'.round($maximale_hypotheek_4,4).'</span></p></li>
+                            </ul>
+                            <ul class="body-value">
+                                <li><strong>Rente (toegep. rente '.$rent4.'%)</strong> <p>€ <span>'.$hypo_ber_rent_4.'</span></p></li>
+                                <li><strong>Aflossing</strong> <p>€ <span>'.round($aflossing_4,4).'</span></p></li>
+                                <li><strong>Bruto maandlast</strong><p>€ <span>'.round($bruto_maandlast_4,4).'</span></p></li>
+                                <li><strong>Belastingteruggave</strong> <p>€ <span>500</span></p></li>
+                            </ul>
+                            <ul class="footer-value">
+                                <li><strong>Netto per maand</strong> <p>€ <span>1.499</span></p></li>
+                            </ul>
+                        </div>
+                    </div>					
+                </div>
+                <div class="row">
+                    <div class="right-desc right-desc2">												
+                        <div class="user-desc">
+                            <h3 class="big-heading">Wil je advies of heb je vragen?</h3>
+                            <h4 class="bid-sub-heading">Bel met een van onze adviseurs</h4>
+                            <h3 class="big-heading big-heading-black"><span> 088 - 543 4564</span></h3>
+                        </div>
+                        <div class="user-image">									
+                            <img src="' . FINAFORTE_URL . '/assets/images/user.png" alt="user name" title="user name">
+                        </div>							
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>';
+    echo $form_html;
+    ?>
+    <script type="text/javascript">
+        function backto_calculator() {
+            $.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: 'action=backto_calculator',
+
+                success: function (responseText) {
+                    
+                    location.reload();
+                }
+            });
+        }
+
+        function receive_by_email() {
+            $.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: 'action=receive_by_email',
+                success: function (responseText) {
+                    location.reload();
+                }
+            });
+        }
+    </script>
+    <?php
+}
+
+function send_email() {
+    global $wpdb;
+
+    $responseArray = array();
+
+    if ($_POST['txt_name'] == '' || trim($_POST['txt_name']) == '') {
+        $error = array();
+        $error['name'] = 'txt_name';
+        $errorArray[] = $error;
+    }
+    if ($_POST['txt_phoneno'] == '' || trim($_POST['txt_phoneno']) == '') {
+        $error = array();
+        $error['name'] = 'txt_phoneno';
+        $errorArray[] = $error;
+    }
+    if ($_POST['txt_email'] == '' || trim($_POST['txt_email']) == '') {
+        $error = array();
+        $error['name'] = 'txt_email';
+        $errorArray[] = $error;
+    }
+    
+    if (count($errorArray) == 0) {
+        
+        echo json_encode(array("status" => 1, "message" => "Email has been sent to your email address."));
+    } else {
+        $responseArray['status'] = 0;
+        $responseArray['error'] = $errorArray;
+        echo json_encode($responseArray);
+        exit;
+    }
+    die;
+}
+
+add_action('wp_ajax_send_email', 'send_email');
+add_action('wp_ajax_nopriv_send_email', 'send_email');
+
+function email_send_form() {
+    ?>
+    <div class="start-page">
+        <div class="container">
+            <div class="start-data">
+                <div class="row">					
+                    <div class="col-sm-12 col-md-12 col-lg-8 stat-left">                        
+                        <h2 class="big-heading text-center">Gratis advies informatie (na klik ontvangen per e-mail)</h2>
+                        <h3><?php echo finaforte_esc_attr(finaforte_get_option('solvency_green_text')); ?></h3>
+                        <div class="start-box start-box-form">
+                            <div class="total-desc">
+                                <h3 class="big-heading">Gratis advies van Finaforte</h3>
+                                <p>Informatie verstrekt in deze berekening is op basis van de door U ingevoerde informatie. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at massa eget justo consequat fermentum ut necturpis. Morbi tristique tempor.</p>
+                                <form name="form_email" id="form_email">
+                                    <div class="form-group row">
+                                        <label for="naam" class="col-sm-2 col-form-label">Naam</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="txt_name" name="txt_name" placeholder="Reeds bekende naam" maxlength="255" value="<?=$_SESSION['finaforte']['name']?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="telefoon" class="col-sm-2 col-form-label">Telefoon</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="txt_phoneno" name="txt_phoneno" placeholder="Reeds bekende telefoonnummer" maxlength="50" value="<?=$_SESSION['finaforte']['phone']?>">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="email" class="col-sm-2 col-form-label">E-mail</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="txt_email" name="txt_email" placeholder="Reeds bekende e-mail" maxlength="255" value="<?=$_SESSION['finaforte']['email']?>">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary btn-yellow" onclick="validate_and_send_email()">Ontvang per e-mail</button>
+                                </form>							
+                            </div>
+                        </div>
+                    </div>	
+                    <div class="col-sm-12 col-md-12 col-lg-4 start-right">						
+                        <div class="sidebar-item">
+                            <div class="make-me-sticky">
+                                <button class="btn close-sidebar"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+                                <div class="start-box">
+                                    <h2 class="big-heading">Overzicht</h2>
+                                    <div class="final-value">
+                                        <ul>
+                                            <li>
+                                                <h3>Uw totale toetsinkomen</h3>
+                                                <h4><strong>?</strong> <span>99.999</span></h4>
+                                            </li>
+                                            <li>
+                                                <h3>Maximale hypotheek</h3>
+                                                <h4><strong>?</strong> <span>999.999</span></h4>
+                                            </li>
+                                            <li>
+                                                <h3>Maandlasten</h3>
+                                                <h4><strong>?</strong> <span>91.999</span></h4>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <h4>
+                                        <span> Op basis van 3,01% toetsrente</span> 										
+                                        <a href="javascript:;" title="Bruto jaarinkomen:" data-placement="bottom" data-toggle="popover" data-content="Vul hier het inkomen in uit uw aangifte inkomstenbelasting achter de noemer Saldo Fiscale Winst Als u in dat jaar geen ondernemer was, vul dan uw jaarinkomen uit uw loon in."><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                                    </h4>									
+                                    <p class="box-msg">Uw berekening is nog niet helemaal accuraat. </p>
+                                    <a href="javascript:;" class="btn btn-primary btn-yellow">Bekijk totale berekening</a>
+                                </div>
+                                <div class="right-desc">
+                                    <div class="user-images-call">
+                                        <h3 class="big-sub-heading">Wil je advies of heb je vragen?</h3>										
+                                        <div class="user-desc">
+                                            <p>Bel met een van onze adviseurs</p>
+                                            <p><span> 088 - 543 4564</span></p>
+                                        </div>
+                                        <div class="user-image">									
+                                            <img src="<?=FINAFORTE_URL?>/assets/images/user.png" alt="user name" title="user name">
+                                        </div>	
+                                    </div>						
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>				
+                </div>
+            </div>
+            <button class="btn btn-primary btn-yellow sidebar-hide-show">Overzicht Value</button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function validate_and_send_email() {
+            var newbasicForm = jQuery("#form_email").serialize();
+            jQuery("#form_email .error").each(function () {
+                jQuery(this).removeClass("error");
+            });
+            jQuery.ajax({
+                type: "POST",
+                url: "<?php echo admin_url('admin-ajax.php'); ?>",
+                data: newbasicForm + '&action=send_email',
+                success: function (responseText) {
+                    responseText = jQuery.parseJSON(responseText);
+                    if (responseText.status == '1')
+                    {
+                        alert(responseText.message);
+                        //loadstart_calculation();                        
+                    } else {
+                        messageData = responseText.error;
+                        for (i = 0; i < messageData.length; i++)
+                        {
+                            jQuery("#form_email #" + messageData[i].name).addClass("error");
+                        }
+                    }
+                }
+            });
+            return false;
+        }
+    
+        var windowSize = $(window).width();
+        if (windowSize <= 767) {
+            $('.single-slider').jRange({
+                from: 0,
+                to: 3.0,
+                step: 0.5,
+                scale: [0.5, 1.0, 2.0, 3.0],
+                format: '%s',
+                width: $(".start-box").width(),
+                showLabels: false,
+                snap: true
+            });
+        }
+        else if (windowSize >= 767) {
+            $('.single-slider').jRange({
+                from: 0,
+                to: 3.0,
+                step: 0.5,
+                scale: [0.5, 1.0, 2.0, 3.0],
+                format: '%s',
+                width: 500,
+                showLabels: false,
+                snap: true
+            });
+        }
+    </script>
+    <?php
+}
+?>

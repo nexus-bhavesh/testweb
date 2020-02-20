@@ -1,0 +1,86 @@
+.error_Msg{ color:#fa4b2a;  } 
+.width_80 {width: 80%; }
+.width_100 {width: 100%; }
+.width_50 {width: 50%; }
+.title {padding-left: 5px !important;}
+
+/* css for option tabs */
+
+.tabs {
+  width: 100%;
+  float: none;
+  list-style: none;
+  position: relative;
+  margin: 80px 0 0 10px;
+  text-align: left;
+}
+.tabs li+li {
+    margin-left: 10px;
+}
+.tabs li {
+    display: inline-block;
+}
+.tabs input[type="radio"] {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+.tabs .tab-label{
+  display: block;
+  padding: 14px 21px;
+  border-radius: 2px 2px 0 0;
+  font-size: 20px;
+  font-weight: normal;
+  text-transform: uppercase;
+  background: #3d3d40 ;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  top: 4px;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.tabs .tab-label:hover {
+  background: #333333;
+  color:#FFFFFF;
+}
+.tabs .tab-content {
+  z-index: 2;
+ display:none;
+  overflow: hidden;
+  width: 93%;
+  font-size: 17px;
+  line-height: 25px;
+  padding: 25px;
+ 
+  margin-top: 74px;
+  left: 0;
+  background: #ffffff;
+}
+p.link a {
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  color: #000099;
+  padding: 5px 10px;
+  margin: 0 5px;
+  background-color: #612e76;
+  -moz-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+p.link a:hover {
+  background-color: #522764;
+}
+.tabs [id^="tab"]:checked ~ [id^="tab-content"] {
+  display: block;
+}
+
+.tabs [id^="tab"]:checked + label {
+    background: #0c6a6d  none repeat scroll 0 0;
+    padding-top: 14px;
+   /* top: 0;*/
+}

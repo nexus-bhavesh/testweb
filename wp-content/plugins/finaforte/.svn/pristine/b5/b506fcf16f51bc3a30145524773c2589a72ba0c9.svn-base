@@ -1,0 +1,20 @@
+<?php
+/**
+ * Admin Class
+ *
+ * Handles the Admin side functionality of plugin
+ *
+ * @package Blog Designer Pack
+ * @since 1.0
+ */
+
+// Exit if accessed directly
+/*if ( !defined( 'ABSPATH' ) ) exit;
+
+class Bdbw_Admin {
+
+	function __construct() {
+
+		// Action to register admin menu
+		add_action( 'admin_menu', array($this, 'bdbw_register_menu'), 9 );
+	}*/

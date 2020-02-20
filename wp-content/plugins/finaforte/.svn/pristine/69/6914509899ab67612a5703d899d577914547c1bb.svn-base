@@ -1,0 +1,1152 @@
+$(document).ready(function () { 
+
+    var lastBoxOpened = 0;
+
+    $("input[name$='group1']").click(function () {
+        var boxNumber = parseInt($(this).parents('.desc').attr("data-box"));
+
+        //check if the data-box was succesfully retrieved. If not, first option chosen, reset all of it
+        if (isNaN(boxNumber)) {
+            boxNumber = 0;
+        }
+
+        var groupval = $(this).val();
+        //alert(groupval);
+        var target = $("#" + groupval);
+        var newBoxOpened = target.attr("data-box");
+        //check if the last opened box was an earlier one than the newly clicked one
+        if (lastBoxOpened > boxNumber) {
+            //hide boxes beyond the one we opened now
+            $('.desc').each(function () {
+                //if box number is bigger than the currently clicked box, close them.
+                if ($(this).attr("data-box") > boxNumber) {
+                    $(this).hide();
+                    //uncheck the previously selected radio buttons in now hidden things
+                    $('input', this).prop("checked", false);
+                }
+            });
+        }
+        //render target box
+        target.show();
+        //update last opened box to the newly opened one
+        lastBoxOpened = newBoxOpened;
+        $("#div_box2").show();
+        $("#div_box3").show();
+        $("#h_typeselection").val(groupval);
+        
+        if(groupval == 'ph1'){
+            $("#div_holding").show();
+            $("#div_holdingtext").show();
+        }else{
+            $("#div_holding").hide();
+            $("#div_holdingtext").hide();
+        }
+        if(groupval=='in1'){
+            
+            $("#div_inkomensgegevens_1").hide();
+            $("#div_inkomensgegevens_2").hide();
+            $("#div_inkomensgegevens_3").hide();
+            
+            $("#div_solvabiliteit_2 :input").attr("disabled", true);
+            $("#div_solvabiliteit_3 :input").attr("disabled", true);
+
+            $("#div_liquiditeit_2 :input").attr("disabled", true);
+            $("#div_liquiditeit_3 :input").attr("disabled", true);
+            
+            $("#single_slider_first").jRange({
+                from: 0,
+                to: 3,
+                step: 1,
+                scale: [0.5,1.0,2.0,3.0],
+                format: "%s",
+                width:500,
+                showLabels: false,
+                snap: true,
+                onstatechange: function(value){
+
+                    $("#h_yearselection").val(value);
+                    if(value=="0"){
+                        $("#div_forhalfyear").show();
+                        $("#div_winstuitonderneming").hide();
+                    }else{
+                        $("#div_forhalfyear").hide();
+                        $("#div_winstuitonderneming").show();
+                    }
+                        
+                    if(value=="1"){
+                        $("#div_winstuitonderneming_2 :input").attr("disabled", true);
+                        $("#div_winstuitonderneming_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", true);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", true);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="2"){
+                        $("#div_winstuitonderneming_2 :input").attr("disabled", false);
+                        $("#div_winstuitonderneming_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="3"){
+                        $("#div_winstuitonderneming_2 :input").attr("disabled", false);
+                        $("#div_winstuitonderneming_3 :input").attr("disabled", false);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", false);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", false);
+                    }
+                    incomedata_calculation();
+                }
+            });
+            $('#single_slider_first').jRange('updateRange', '0.5,3','0');
+        }else if(groupval=='tv1'){
+            $("#div_winstuitonderneming").show();
+            $("#div_forhalfyear").hide();
+            $("#div_inkomensgegevens_1").hide();
+            $("#div_inkomensgegevens_2").hide();
+            $("#div_inkomensgegevens_3").hide();
+            
+            $("#div_solvabiliteit_2 :input").attr("disabled", true);
+            $("#div_solvabiliteit_3 :input").attr("disabled", true);
+
+            $("#div_liquiditeit_2 :input").attr("disabled", true);
+            $("#div_liquiditeit_3 :input").attr("disabled", true);
+            $("#single_slider_tv1").jRange({
+                from: 1,
+                to: 3,
+                step: 1,
+                scale: [1.0,2.0,3.0],
+                format: "%s",
+                width:500,
+                showLabels: false,
+                snap: true,
+                onstatechange: function(value){
+                    $("#h_yearselection").val(value);
+                    if(value=="1"){
+                        $("#div_winstuitonderneming_2 :input").attr("disabled", true);
+                        $("#div_winstuitonderneming_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", true);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", true);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="2"){
+                        $("#div_winstuitonderneming_2 :input").attr("disabled", false);
+                        $("#div_winstuitonderneming_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="3"){
+                        $("#div_winstuitonderneming_2 :input").attr("disabled", false);
+                        $("#div_winstuitonderneming_3 :input").attr("disabled", false);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", false);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", false);
+                    }
+                    incomedata_calculation();
+                }
+            });
+            $('#single_slider_tv1').jRange('updateRange', '1,3','1');
+        }else{
+            $("#div_forhalfyear").hide();
+            $("#div_winstuitonderneming").hide();
+            $("#div_inkomensgegevens_1").show();
+            $("#div_inkomensgegevens_2").show();
+            $("#div_inkomensgegevens_3").show();
+            $("#single_slider_ph1").jRange({
+                from: 1,
+                to: 3,
+                step: 1,
+                scale: [1.0,2.0,3.0],
+                format: "%s",
+                width:500,
+                showLabels: false,
+                snap: true,
+                onstatechange: function(value){
+                    $("#h_yearselection").val(value);
+                    if(value=="1"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", true);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", true);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", true);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="2"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="3"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", false);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", false);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", false);
+                    }
+                    incomedata_calculation();
+                }
+            });
+            $('#single_slider_ph1').jRange('updateRange', '1,3','1');
+        }
+    });
+    
+    $("input.numbers").keypress(function(e) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }else{
+            return true;
+        }
+    });
+
+});
+
+/*function halfyear_calculation(){
+    var halfyear_first  = $("#txt_halfyear_first").val();
+    var halfyear_second = $("#txt_halfyear_second").val();
+    var halfyear_third  = $("#txt_halfyear_third").val();     
+    
+    if(halfyear_first!='' && halfyear_second!='' && halfyear_third!=''){
+        var average1 = (parseInt(halfyear_first) + parseInt(halfyear_second) + parseInt(halfyear_third))/3;
+        
+        var selected_year = $("#h_yearselection").val();
+        var p_yearselection = $("#h_partneryearselection").val();
+        var p_typeselection = $("#h_partnertypeselection").val();
+        var p_totalincome = 0;
+        
+        if(selected_year=='3'){
+            var totalincome = average1;
+        }else if(selected_year=='2'){
+            var totalincome = (average1 * 90) / 100;
+        }else{
+            var totalincome = (average1 * 80) / 100;
+        }        
+        totalincome = totalincome.toFixed(2);
+
+    if(p_yearselection=='0'){
+        var salaris_1 = $("#txt_halfyearp_first").val();
+        var dividend_1 = $("#txt_halfyearp_second").val();
+        var overwinst_1 = $("#txt_halfyearp_third").val();
+        if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+            var average = (parseInt(salaris_1) + parseInt(dividend_1) + parseInt(overwinst_1))/3;
+            average = (average*80)/100;
+            p_totalincome = average.toFixed(2);
+        }
+    }else if(p_yearselection=='1'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){            
+                var average1 = (salaris_1*75)/100;
+                var average2 = (dividend_1*75)/100;
+                average2 = (average2*75)/100;
+                var average3 = (overwinst_1*75)/100;
+                average3 = (average3*75)/100;
+                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var average1 = $("#txt_winstuitondernemingp_1").val();           
+            if(average1!=''){                
+                var average = (average1*80)/100;
+                p_totalincome = average.toFixed(2);
+            }
+        }
+    }else if(p_yearselection=='2'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var salaris_2 = $("#txt_salarisp_2").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var dividend_2 = $("#txt_dividendp_2").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            var overwinst_2 = $("#txt_overwinstp_2").val();
+        
+            if(salaris_1!='' && salaris_2!='' && dividend_1!='' && dividend_2!='' && overwinst_1!='' && overwinst_2!=''){
+            
+                var average1 = (((parseInt(salaris_1)+parseInt(salaris_2))/2)*90)/100;
+
+                var average2 = (((parseInt(dividend_1)+parseInt(dividend_2))/2)*75)/100;
+                average2 = (average2*90)/100;
+
+                var average3 = (((parseInt(overwinst_1)+parseInt(overwinst_2))/2)*75)/100;
+                average3 = (average3*90)/100;
+
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var salaris_1 = $("#txt_winstuitondernemingp_1").val();
+            var dividend_1 = $("#txt_winstuitondernemingp_2").val();
+            
+            if(salaris_1!='' && dividend_1!=''){
+                var average = (parseInt(salaris_1) + parseInt(dividend_1))/2;
+                average = (average*90)/100;
+                p_totalincome = average.toFixed(2);
+            }         
+        }
+    }else if(p_yearselection=='3'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var salaris_2 = $("#txt_salarisp_2").val();
+            var salaris_3 = $("#txt_salarisp_3").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var dividend_2 = $("#txt_dividendp_2").val();
+            var dividend_3 = $("#txt_dividendp_3").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            var overwinst_2 = $("#txt_overwinstp_2").val();
+            var overwinst_3 = $("#txt_overwinstp_3").val();
+        
+            if(salaris_1!='' && salaris_2!='' && salaris_3!='' && dividend_1!='' && dividend_2!='' && dividend_3!='' && overwinst_1!='' && overwinst_2!='' && overwinst_3!=''){
+            
+                var average1 = (parseInt(salaris_1) + parseInt(salaris_2) + parseInt(salaris_3))/3;
+                
+                var average2 = (((parseInt(dividend_1) + parseInt(dividend_2) + parseInt(dividend_3))/3)*75)/100;
+                
+                var average3 = (((parseInt(overwinst_1) + parseInt(overwinst_2) + parseInt(overwinst_3))/3)*75)/100;
+                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var salaris_1 = $("#txt_winstuitondernemingp_1").val();
+            var dividend_1 = $("#txt_winstuitondernemingp_2").val();
+            var overwinst_1 = $("#txt_winstuitondernemingp_3").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+                var average = (parseInt(salaris_1) + parseInt(dividend_1) + parseInt(overwinst_1))/3;
+                p_totalincome = average.toFixed(2);
+            }            
+        }
+    }
+
+    if(p_totalincome != 0 || p_totalincome != 'NULL') {
+        p_totalincome = (p_totalincome * 0.70);        
+    }
+
+    totalincome_sum = parseFloat(totalincome) + parseFloat(p_totalincome);
+
+        var data = {
+                        action          : 'ffc_final_result',
+                        is_ajax         : 1,
+                        totalincome     : totalincome_sum,
+                    };
+        $.post(ffc.ajaxurl,data,function(response) {
+            
+            data = $.parseJSON(response);           
+            var maximale_hypotheek  = parseFloat(data.maximale_hypotheek);
+            var maandlasten         = parseFloat(data.maandlasten);
+            maximale_hypotheek  = maximale_hypotheek.toFixed(3);
+            maandlasten         = maandlasten.toFixed(3);
+
+            var finalresult = "";
+            finalresult+='<ul>';
+            finalresult+='<li>';
+            finalresult+='<h3>Uw totale toetsinkomen</h3>';
+            finalresult+='<h4>&euro; <span>'+totalincome_sum+'</span></h4></li>';
+            finalresult+='<li>';
+            finalresult+='<h3>Maximale hypotheek</h3>';
+            finalresult+='<h4>&euro; <span>'+maximale_hypotheek+'</span></h4>';
+            finalresult+='</li>';
+            finalresult+='<li>';
+            finalresult+='<h3>Maandlasten</h3>';
+            finalresult+='<h4>&euro; <span>'+maandlasten+'</span></h4>';
+            finalresult+='</li>';
+            finalresult+='</ul>';
+         
+        if(totalincome != 0) {
+
+            $("#h_totalincome").val(totalincome);
+            $("#h_totalincomep").val(p_totalincome);
+            $("#h_max_hypotheek").val(maximale_hypotheek);
+            $("#h_maandlasten").val(maandlasten);
+            $("#div_overzicht").html(finalresult);
+            $("#div_overzicht").show();
+        }else{
+            $("#h_totalincome").val("0");
+            $("#div_overzicht").html("");
+            $("#div_overzicht").hide();
+        }
+    }); 
+            }
+
+}*/
+
+function calculate_solvabiliteit(){
+    var yearselection = $("#h_yearselection").val();    
+    if(yearselection=='0' || yearselection=='1'){
+        var eigenvermogen_1 = $("#txt_eigenvermogen_1").val();
+        var balanstotaal_1 = $("#txt_balanstotaal_1").val();
+        if(eigenvermogen_1!='' && balanstotaal_1!=''){
+            var percent = (eigenvermogen_1/balanstotaal_1)*100;
+            percent = percent.toFixed(2);
+            //$("#div_solvency_percentage").html('<strong>Solvabiliteit percentage</strong><p><span>'+percent+'</span> %</p>');
+            //$('#div_solvabiliteitsscore').show();
+            $("#h_solvabiliteit").val(percent);
+        }
+    }else if(yearselection=='2'){
+        var eigenvermogen_1 = $("#txt_eigenvermogen_1").val();        
+        var eigenvermogen_2 = $("#txt_eigenvermogen_2").val();
+        var balanstotaal_1 = $("#txt_balanstotaal_1").val();
+        var balanstotaal_2 = $("#txt_balanstotaal_2").val();
+        if(eigenvermogen_1!='' && eigenvermogen_2!='' && balanstotaal_1!='' && balanstotaal_2!=''){
+            var average1 = (parseInt(eigenvermogen_1) + parseInt(eigenvermogen_2))/2;
+            var average2 = (parseInt(balanstotaal_1) + parseInt(balanstotaal_2))/2;
+            var percent = (average1/average2)*100;
+            percent = percent.toFixed(2);
+            //$("#div_solvency_percentage").html('<strong>Solvabiliteit percentage</strong><p><span>'+percent+'</span> %</p>');
+            //$('#div_solvabiliteitsscore').show();
+            $("#h_solvabiliteit").val(percent);
+        }        
+    }else if(yearselection=='3'){
+        var eigenvermogen_1 = $("#txt_eigenvermogen_1").val();        
+        var eigenvermogen_2 = $("#txt_eigenvermogen_2").val();
+        var eigenvermogen_3 = $("#txt_eigenvermogen_3").val();
+        var balanstotaal_1 = $("#txt_balanstotaal_1").val();
+        var balanstotaal_2 = $("#txt_balanstotaal_2").val();
+        var balanstotaal_3 = $("#txt_balanstotaal_3").val();
+        if(eigenvermogen_1!='' && eigenvermogen_2!='' && eigenvermogen_3!='' && balanstotaal_1!='' && balanstotaal_2!='' && balanstotaal_3!=''){
+            var average1 = (parseInt(eigenvermogen_1) + parseInt(eigenvermogen_2) + parseInt(eigenvermogen_3))/3;
+            var average2 = (parseInt(balanstotaal_1) + parseInt(balanstotaal_2) + parseInt(balanstotaal_3))/3;
+            
+            var percent = (average1/average2)*100;
+            percent = percent.toFixed(2);
+            //$("#div_solvency_percentage").html('<strong>Solvabiliteit percentage</strong><p><span>'+percent+'</span> %</p>');
+            //$('#div_solvabiliteitsscore').show();
+            $("#h_solvabiliteit").val(percent);
+        }
+    }
+}
+
+function calculate_liquiditeit(){
+    var yearselection = $("#h_yearselection").val();
+    if(yearselection=='0' || yearselection=='1'){
+        var vlottendeactiva_1 = $("#txt_vlottendeactiva_1").val();
+        var kortvreemdvermogen_1 = $("#txt_kortvreemdvermogen_1").val();
+        if(vlottendeactiva_1!='' && kortvreemdvermogen_1!=''){
+            var percent = vlottendeactiva_1/kortvreemdvermogen_1;
+            percent = percent.toFixed(2);
+            //$("#div_liquidity_percentage").html('<strong>Liquiditeitsratio</strong><p><span>'+percent+'</span></p>');
+            //$('#div_liquiditeitsscore').show();
+            $("#h_liquiditeit").val(percent);
+        }
+    }else if(yearselection=='2'){
+        var vlottendeactiva_1 = $("#txt_vlottendeactiva_1").val();        
+        var vlottendeactiva_2 = $("#txt_vlottendeactiva_2").val();
+        var kortvreemdvermogen_1 = $("#txt_kortvreemdvermogen_1").val();
+        var kortvreemdvermogen_2 = $("#txt_kortvreemdvermogen_2").val();
+        if(vlottendeactiva_1!='' && vlottendeactiva_2!='' && kortvreemdvermogen_1!='' && kortvreemdvermogen_2!=''){
+            var average1 = (parseInt(vlottendeactiva_1) + parseInt(vlottendeactiva_2))/2;
+            var average2 = (parseInt(kortvreemdvermogen_1) + parseInt(kortvreemdvermogen_2))/2;
+
+            var percent = average1/average2;
+            percent = percent.toFixed(2);
+            //$("#div_liquidity_percentage").html('<strong>Liquiditeitsratio</strong><p><span>'+percent+'</span></p>');
+            //$('#div_liquiditeitsscore').show();
+            $("#h_liquiditeit").val(percent);
+        }
+    }else if(yearselection=='3'){
+        var vlottendeactiva_1 = $("#txt_vlottendeactiva_1").val();        
+        var vlottendeactiva_2 = $("#txt_vlottendeactiva_2").val();
+        var vlottendeactiva_3 = $("#txt_vlottendeactiva_3").val();
+        var kortvreemdvermogen_1 = $("#txt_kortvreemdvermogen_1").val();
+        var kortvreemdvermogen_2 = $("#txt_kortvreemdvermogen_2").val();
+        var kortvreemdvermogen_3 = $("#txt_kortvreemdvermogen_3").val();
+        if(vlottendeactiva_1!='' && vlottendeactiva_2!='' && vlottendeactiva_3!='' && kortvreemdvermogen_1!='' && kortvreemdvermogen_2!='' && kortvreemdvermogen_3!=''){
+            var average1 = (parseInt(vlottendeactiva_1) + parseInt(vlottendeactiva_2) + parseInt(vlottendeactiva_3))/3;
+            var average2 = (parseInt(kortvreemdvermogen_1) + parseInt(kortvreemdvermogen_2) + parseInt(kortvreemdvermogen_3))/3;
+            
+            var percent = average1/average2;
+            percent = percent.toFixed(2);
+            //$("#div_liquidity_percentage").html('<strong>Liquiditeitsratio</strong><p><span>'+percent+'</span></p>');
+            //$('#div_liquiditeitsscore').show();
+            $("#h_liquiditeit").val(percent);
+        }
+    }
+}
+
+function incomedata_calculation(){ 
+    var yearselection   = $("#h_yearselection").val();
+    var typeselection   = $("#h_typeselection").val();
+    var p_yearselection = $("#h_partneryearselection").val();
+    var p_typeselection = $("#h_partnertypeselection").val();
+    var halfyear_first  = $("#txt_halfyear_first").val();
+    var halfyear_second = $("#txt_halfyear_second").val();
+    var halfyear_third  = $("#txt_halfyear_third").val();
+    var loondienst      = $("#txt_loondienst").val();
+
+    var totalincome     = 0;
+    var p_totalincome   = 0;
+    var hy_totalincome  = 0;
+
+    if(loondienst!='') {
+        var mainincome = $("#h_totalincome").val();
+        if(mainincome!='') {
+            var partofmain = mainincome/2;
+            p_totalincome = parseFloat(partofmain)+parseFloat(loondienst);
+            p_totalincome = p_totalincome.toFixed(2);
+        } else {
+            p_totalincome = loondienst.toFixed(2);
+        }
+    }
+
+    // calculation for Freelancer 0.5 Year
+    if(halfyear_third!='') {
+
+        var totalincome = parseInt(halfyear_third);              
+        hy_totalincome  = totalincome.toFixed(2);
+    }
+    
+    if(yearselection=='1') {
+
+        if(typeselection=='in1') {
+            // cal for Freelancer
+        }
+        if(typeselection=='ph1') { // cal for v.o.f
+
+            var salaris_1 = $("#txt_salaris_1").val();
+            var dividend_1 = $("#txt_dividend_1").val();
+            var overwinst_1 = $("#txt_overwinst_1").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+                var average1 = (salaris_1*75)/100;
+                var average2 = (dividend_1*75)/100;
+                average2 = (average2*75)/100;
+                var average3 = (overwinst_1*75)/100;
+                average3 = (average3*75)/100;
+
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                totalincome = average.toFixed(2);
+            }
+        } else { //cal of B.V
+            var average1 = $("#txt_winstuitonderneming_1").val();
+
+            average = (average1*80)/100;
+            totalincome = average.toFixed(2); 
+        }
+    }else if(yearselection=='2'){
+        if(typeselection=='ph1'){
+            var salaris_1 = $("#txt_salaris_1").val();
+            var salaris_2 = $("#txt_salaris_2").val();
+            var dividend_1 = $("#txt_dividend_1").val();
+            var dividend_2 = $("#txt_dividend_2").val();
+            var overwinst_1 = $("#txt_overwinst_1").val();
+            var overwinst_2 = $("#txt_overwinst_2").val();
+
+            if(salaris_1!='' && salaris_2!='' && dividend_1!='' && dividend_2!='' && overwinst_1!='' && overwinst_2!=''){
+                var average1 = (((parseInt(salaris_1)+parseInt(salaris_2))/2)*90)/100;
+
+                var average2 = (((parseInt(dividend_1)+parseInt(dividend_2))/2)*75)/100;
+                average2 = (average2*90)/100;
+
+                var average3 = (((parseInt(overwinst_1)+parseInt(overwinst_2))/2)*75)/100;
+                average3 = (average3*90)/100;
+
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                totalincome = average.toFixed(2);
+            }
+        }else{
+            var average1 = $("#txt_winstuitonderneming_1").val();
+            var average2 = $("#txt_winstuitonderneming_2").val();
+
+            var average = (parseFloat(average1) + parseFloat(average2))/2;
+            average = (average*90)/100;
+            totalincome = average.toFixed(2);
+        }
+    }else if(yearselection=='3'){
+        if(typeselection=='ph1'){
+            var salaris_1 = $("#txt_salaris_1").val();
+            var salaris_2 = $("#txt_salaris_2").val();
+            var salaris_3 = $("#txt_salaris_3").val();
+            var dividend_1 = $("#txt_dividend_1").val();
+            var dividend_2 = $("#txt_dividend_2").val();
+            var dividend_3 = $("#txt_dividend_3").val();
+            var overwinst_1 = $("#txt_overwinst_1").val();
+            var overwinst_2 = $("#txt_overwinst_2").val();
+            var overwinst_3 = $("#txt_overwinst_3").val();
+
+            if(salaris_1!='' && salaris_2!='' && salaris_3!='' && dividend_1!='' && dividend_2!='' && dividend_3!='' && overwinst_1!='' && overwinst_2!='' && overwinst_3!=''){
+                var average1 = (parseInt(salaris_1) + parseInt(salaris_2) + parseInt(salaris_3))/3;                
+                var average2 = (((parseInt(dividend_1) + parseInt(dividend_2) + parseInt(dividend_3))/3)*75)/100;                
+                var average3 = (((parseInt(overwinst_1) + parseInt(overwinst_2) + parseInt(overwinst_3))/3)*75)/100;                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                totalincome = average.toFixed(2);
+            }
+        }else{
+            var average1 = $("#txt_winstuitonderneming_1").val();
+            var average2 = $("#txt_winstuitonderneming_2").val();
+            var average3 = $("#txt_winstuitonderneming_3").val();
+            
+            var average = (parseFloat(average1) + parseFloat(average2) + parseFloat(average3))/3;
+            totalincome = average.toFixed(2);
+        }
+    }
+
+    if(p_yearselection=='0'){
+        var salaris_1 = $("#txt_halfyearp_first").val();
+        var dividend_1 = $("#txt_halfyearp_second").val();
+        var overwinst_1 = $("#txt_halfyearp_third").val();
+        if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+            var average = (parseInt(salaris_1) + parseInt(dividend_1) + parseInt(overwinst_1))/3;
+            average = (average*80)/100;
+            p_totalincome = average.toFixed(2);
+        }
+    }else if(p_yearselection=='1'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){            
+                var average1 = (salaris_1*75)/100;
+                var average2 = (dividend_1*75)/100;
+                average2 = (average2*75)/100;
+                var average3 = (overwinst_1*75)/100;
+                average3 = (average3*75)/100;
+                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var average1 = $("#txt_winstuitondernemingp_1").val();           
+            if(average1!=''){                
+                var average = (average1*80)/100;
+                p_totalincome = average.toFixed(2);
+            }
+        }
+    }else if(p_yearselection=='2'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var salaris_2 = $("#txt_salarisp_2").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var dividend_2 = $("#txt_dividendp_2").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            var overwinst_2 = $("#txt_overwinstp_2").val();
+        
+            if(salaris_1!='' && salaris_2!='' && dividend_1!='' && dividend_2!='' && overwinst_1!='' && overwinst_2!=''){
+            
+                var average1 = (((parseInt(salaris_1)+parseInt(salaris_2))/2)*90)/100;
+
+                var average2 = (((parseInt(dividend_1)+parseInt(dividend_2))/2)*75)/100;
+                average2 = (average2*90)/100;
+
+                var average3 = (((parseInt(overwinst_1)+parseInt(overwinst_2))/2)*75)/100;
+                average3 = (average3*90)/100;
+
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var salaris_1 = $("#txt_winstuitondernemingp_1").val();
+            var dividend_1 = $("#txt_winstuitondernemingp_2").val();
+            
+            if(salaris_1!='' && dividend_1!=''){
+                var average = (parseInt(salaris_1) + parseInt(dividend_1))/2;
+                average = (average*90)/100;
+                p_totalincome = average.toFixed(2);
+            }         
+        }
+    }else if(p_yearselection=='3'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var salaris_2 = $("#txt_salarisp_2").val();
+            var salaris_3 = $("#txt_salarisp_3").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var dividend_2 = $("#txt_dividendp_2").val();
+            var dividend_3 = $("#txt_dividendp_3").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            var overwinst_2 = $("#txt_overwinstp_2").val();
+            var overwinst_3 = $("#txt_overwinstp_3").val();
+        
+            if(salaris_1!='' && salaris_2!='' && salaris_3!='' && dividend_1!='' && dividend_2!='' && dividend_3!='' && overwinst_1!='' && overwinst_2!='' && overwinst_3!=''){
+            
+                var average1 = (parseInt(salaris_1) + parseInt(salaris_2) + parseInt(salaris_3))/3;
+                
+                var average2 = (((parseInt(dividend_1) + parseInt(dividend_2) + parseInt(dividend_3))/3)*75)/100;
+                
+                var average3 = (((parseInt(overwinst_1) + parseInt(overwinst_2) + parseInt(overwinst_3))/3)*75)/100;
+                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var salaris_1 = $("#txt_winstuitondernemingp_1").val();
+            var dividend_1 = $("#txt_winstuitondernemingp_2").val();
+            var overwinst_1 = $("#txt_winstuitondernemingp_3").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+                var average = (parseInt(salaris_1) + parseInt(dividend_1) + parseInt(overwinst_1))/3;
+                p_totalincome = average.toFixed(2);
+            }            
+        }
+    }
+
+    if(p_totalincome != 0 || p_totalincome != 'NULL') {
+        p_totalincome = (p_totalincome * 0.70);        
+    }
+    totalincome = parseFloat(totalincome) + parseFloat(hy_totalincome);
+    totalincome_sum = parseFloat(totalincome) + parseFloat(p_totalincome);
+
+    var data = {
+                        action          : 'ffc_final_result',
+                        is_ajax         : 1,
+                        totalincome     : totalincome_sum
+                    };
+        $.post(ffc.ajaxurl,data,function(response) {
+            /* Do Response Process */
+            data = $.parseJSON(response);           
+            var maximale_hypotheek  = parseFloat(data.maximale_hypotheek);
+            var maandlasten         = parseFloat(data.maandlasten);
+            maximale_hypotheek  = maximale_hypotheek.toFixed(3);
+            maandlasten         = maandlasten.toFixed(3);
+
+            var finalresult = "";
+            finalresult+='<ul>';
+            finalresult+='<li>';
+            finalresult+='<h3>Uw totale toetsinkomen</h3>';
+            finalresult+='<h4>&euro; <span>'+totalincome_sum+'</span></h4></li>';
+            finalresult+='<li>';
+            finalresult+='<h3>Maximale hypotheek</h3>';
+            finalresult+='<h4>&euro; <span>'+maximale_hypotheek+'</span></h4>';
+            finalresult+='</li>';
+            finalresult+='<li>';
+            finalresult+='<h3>Maandlasten</h3>';
+            finalresult+='<h4>&euro; <span>'+maandlasten+'</span></h4>';
+            finalresult+='</li>';
+            finalresult+='</ul>';
+            //alert(finalresult);
+            if(totalincome!='0'){
+                $("#h_totalincome").val(totalincome);
+                $("#h_totalincomep").val(p_totalincome);
+                $("#h_totalincome_sum").val(totalincome_sum);
+                $("#h_max_hypotheek").val(maximale_hypotheek);
+                $("#h_maandlasten").val(maandlasten);
+                $("#div_overzicht").html(finalresult);
+                $("#div_overzicht").show();
+            }else{
+                $("#h_totalincome").val("0");
+                $("#div_overzicht").html("");
+                $("#div_overzicht").hide();
+            }
+        });
+   
+}
+
+function partner_selection(){
+    var selected = $("input[name='rdo_partner']:checked").val();
+
+    if(selected=='1'){
+      
+        $("#div_box4").show();
+               
+    }else{        
+        $("#div_box4").hide();
+        $("#div_box5").hide();
+    }
+}
+
+$(document).ready(function () {
+    $("input[name$='rdo_partnertype']").click(function () {
+        var partnertypeval = $(this).val();
+        //alert(partnertypeval);
+        $("#h_partnertypeselection").val(partnertypeval);
+        $("#div_box4_1").show();
+        if(partnertypeval=='1'){
+            $("#div_loondienst").show();
+            $("#div_box4_1").hide();
+            $("#div_forhalfyearp").hide();
+        }else{
+            $("#div_loondienst").hide();
+            $("#div_box4_1").show();
+            $("#div_forhalfyearp").show();
+        }
+        if(partnertypeval=='4'){
+            $("#div_inkomensgegevensp_1").show();
+            $("#div_inkomensgegevensp_2").show();
+            $("#div_inkomensgegevensp_3").show();
+        }else{
+            
+            $("#div_inkomensgegevensp_1").hide();
+            $("#div_inkomensgegevensp_2").hide();
+            $("#div_inkomensgegevensp_3").hide();
+        }
+        
+        $("#div_box5").show();
+        
+        if(partnertypeval=='2'){
+            $("#div_rangeslider").html('<input id="single_slider_2" type="hidden" value="0"/><div class="gray-line1"></div><div class="gray-line2"></div><div class="gray-line3"></div><div class="gray-line4"></div>');
+            $("#div_rangeslider").addClass('demo-output2');
+        }else{
+            $("#div_rangeslider").html('<input id="single_slider_2" type="hidden" value="0"/><div class="gray-line1"></div><div class="gray-line2"></div><div class="gray-line3"></div>');
+            $("#div_rangeslider").removeClass('demo-output2');
+        }
+        load_year_range_partner();
+        if(partnertypeval=='2'){
+            $('#single_slider_2').jRange('updateRange', '0.5,3','0');
+        }else{
+            $('#single_slider_2').jRange('setValue', '1');
+        }
+        
+    });
+});
+
+function load_year_range_partner(){
+    var typeselection = $("#h_partnertypeselection").val();
+    //if(typeselection=='4'){
+    if(typeselection=='2'){
+        var range_from = 0;
+        var range_scale = [0.5,1.0,2.0,3.0];
+    }else{
+        var range_from = 1;
+        var range_scale = [1,2,3];
+    }
+    $("#single_slider_2").jRange({
+        from: range_from,
+        to: 3,
+        step: 1,
+        scale: range_scale,
+        format: "%s",
+        width:500,
+        showLabels: false,
+        snap: true,
+        onstatechange: function(value){
+            //alert(typeselection);
+            $("#div_winstuitondernemingp").hide();
+            if(typeselection!='1'){
+                $("#h_partneryearselection").val(value);
+                
+                if(value=='0'){
+                    $("#div_forhalfyearp").show();
+                }else if(value=="1"){
+                    $("#div_forhalfyearp").hide();
+                    if(typeselection=='4'){
+                        $("#div_inkomensgegevensp_2 :input").attr("disabled", true);
+                        $("#div_inkomensgegevensp_3 :input").attr("disabled", true);
+                    }else{
+                        $("#div_winstuitondernemingp").show();
+                        $("#div_winstuitondernemingp_2 :input").attr("disabled", true);
+                        $("#div_winstuitondernemingp_3 :input").attr("disabled", true);
+                    }
+
+                    $("#div_solvabiliteitp_2 :input").attr("disabled", true);
+                    $("#div_solvabiliteitp_3 :input").attr("disabled", true);
+
+                    $("#div_liquiditeitp_2 :input").attr("disabled", true);
+                    $("#div_liquiditeitp_3 :input").attr("disabled", true);
+                }else if(value=="2"){
+                    $("#div_forhalfyearp").hide();
+                    if(typeselection=='4'){
+                        $("#div_inkomensgegevensp_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevensp_3 :input").attr("disabled", true);
+                    }else{
+                        $("#div_winstuitondernemingp").show();
+                        $("#div_winstuitondernemingp_2 :input").attr("disabled", false);
+                        $("#div_winstuitondernemingp_3 :input").attr("disabled", true);
+                    }
+
+                    $("#div_solvabiliteitp_2 :input").attr("disabled", false);
+                    $("#div_solvabiliteitp_3 :input").attr("disabled", true);
+
+                    $("#div_liquiditeitp_2 :input").attr("disabled", false);
+                    $("#div_liquiditeitp_3 :input").attr("disabled", true);
+                }else if(value=="3"){
+                    $("#div_forhalfyearp").hide();
+                    if(typeselection=='4'){
+                        $("#div_inkomensgegevensp_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevensp_3 :input").attr("disabled", false);
+                    }else{
+                        $("#div_winstuitondernemingp").show();
+                        $("#div_winstuitondernemingp_2 :input").attr("disabled", false);
+                        $("#div_winstuitondernemingp_3 :input").attr("disabled", false);
+                    }
+
+                    $("#div_solvabiliteitp_2 :input").attr("disabled", false);
+                    $("#div_solvabiliteitp_3 :input").attr("disabled", false);
+
+                    $("#div_liquiditeitp_2 :input").attr("disabled", false);
+                    $("#div_liquiditeitp_3 :input").attr("disabled", false);
+                }
+            }
+        }
+    });
+}
+
+/*function loondienst_calculation(){
+    var loondienst = $("#txt_loondienst").val();
+    var finalloondienst = "";
+    
+    if(loondienst!=''){
+        var mainincome = $("#h_totalincome").val();
+        if(mainincome!=''){
+            var partofmain = mainincome/2;
+            finalloondienst = parseFloat(partofmain)+parseFloat(loondienst);
+            finalloondienst = finalloondienst.toFixed(2);
+        }else{
+            finalloondienst = loondienst.toFixed(2);
+        }
+        
+        var finalresult = "";
+        finalresult+='<ul>';
+        finalresult+='<li>';
+        finalresult+='<h3>Uw totale toetsinkomen</h3>';
+        finalresult+='<h4>&euro; <span>'+finalloondienst+'</span></h4></li>';
+        finalresult+='<li>';
+        finalresult+='<h3>Maximale hypotheek</h3>';
+        finalresult+='<h4>&euro; <span>777.999</span></h4>';
+        finalresult+='</li>';
+        finalresult+='<li>';
+        finalresult+='<h3>Maandlasten</h3>';
+        finalresult+='<h4>&euro; <span>91.999</span></h4>';
+        finalresult+='</li>';
+        finalresult+='</ul>';
+        //alert(finalresult);
+        if(finalloondienst!='0'){
+            $("#h_totalincomep").val(finalloondienst);
+            $("#div_overzicht").html(finalresult);
+            $("#div_overzicht").show();
+        }else{
+            $("#h_totalincomep").val("0");
+            $("#div_overzicht").html("");
+            $("#div_overzicht").hide();
+        }
+    }
+    
+}*/
+
+/*function partner_incomedata_calculation(){
+    var p_yearselection = $("#h_partneryearselection").val();
+    var p_typeselection = $("#h_partnertypeselection").val();
+    var p_totalincome = 0;
+    if(p_yearselection=='0'){
+        var salaris_1 = $("#txt_halfyearp_first").val();
+        var dividend_1 = $("#txt_halfyearp_second").val();
+        var overwinst_1 = $("#txt_halfyearp_third").val();
+        if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+            var average = (parseInt(salaris_1) + parseInt(dividend_1) + parseInt(overwinst_1))/3;
+            average = (average*80)/100;
+            p_totalincome = average.toFixed(2);
+        }
+    }else if(p_yearselection=='1'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){            
+                var average1 = (salaris_1*75)/100;
+                var average2 = (dividend_1*75)/100;
+                average2 = (average2*75)/100;
+                var average3 = (overwinst_1*75)/100;
+                average3 = (average3*75)/100;
+                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var average1 = $("#txt_winstuitondernemingp_1").val();           
+            if(average1!=''){                
+                var average = (average1*80)/100;
+                p_totalincome = average.toFixed(2);
+            }
+        }
+    }else if(p_yearselection=='2'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var salaris_2 = $("#txt_salarisp_2").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var dividend_2 = $("#txt_dividendp_2").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            var overwinst_2 = $("#txt_overwinstp_2").val();
+        
+            if(salaris_1!='' && salaris_2!='' && dividend_1!='' && dividend_2!='' && overwinst_1!='' && overwinst_2!=''){
+            
+                var average1 = (((parseInt(salaris_1)+parseInt(salaris_2))/2)*90)/100;
+
+                var average2 = (((parseInt(dividend_1)+parseInt(dividend_2))/2)*75)/100;
+                average2 = (average2*90)/100;
+
+                var average3 = (((parseInt(overwinst_1)+parseInt(overwinst_2))/2)*75)/100;
+                average3 = (average3*90)/100;
+
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var salaris_1 = $("#txt_winstuitondernemingp_1").val();
+            var dividend_1 = $("#txt_winstuitondernemingp_2").val();
+            
+            if(salaris_1!='' && dividend_1!=''){
+                var average = (parseInt(salaris_1) + parseInt(dividend_1))/2;
+                average = (average*90)/100;
+                p_totalincome = average.toFixed(2);
+            }         
+        }
+    }else if(p_yearselection=='3'){
+        if(p_typeselection=='4'){
+            var salaris_1 = $("#txt_salarisp_1").val();
+            var salaris_2 = $("#txt_salarisp_2").val();
+            var salaris_3 = $("#txt_salarisp_3").val();
+            var dividend_1 = $("#txt_dividendp_1").val();
+            var dividend_2 = $("#txt_dividendp_2").val();
+            var dividend_3 = $("#txt_dividendp_3").val();
+            var overwinst_1 = $("#txt_overwinstp_1").val();
+            var overwinst_2 = $("#txt_overwinstp_2").val();
+            var overwinst_3 = $("#txt_overwinstp_3").val();
+        
+            if(salaris_1!='' && salaris_2!='' && salaris_3!='' && dividend_1!='' && dividend_2!='' && dividend_3!='' && overwinst_1!='' && overwinst_2!='' && overwinst_3!=''){
+            
+                var average1 = (parseInt(salaris_1) + parseInt(salaris_2) + parseInt(salaris_3))/3;
+                
+                var average2 = (((parseInt(dividend_1) + parseInt(dividend_2) + parseInt(dividend_3))/3)*75)/100;
+                
+                var average3 = (((parseInt(overwinst_1) + parseInt(overwinst_2) + parseInt(overwinst_3))/3)*75)/100;
+                
+                var average = parseFloat(average1) + parseFloat(average2) + parseFloat(average3);
+                p_totalincome = average.toFixed(2);
+            }
+        }else{
+            var salaris_1 = $("#txt_winstuitondernemingp_1").val();
+            var dividend_1 = $("#txt_winstuitondernemingp_2").val();
+            var overwinst_1 = $("#txt_winstuitondernemingp_3").val();
+            if(salaris_1!='' && dividend_1!='' && overwinst_1!=''){
+                var average = (parseInt(salaris_1) + parseInt(dividend_1) + parseInt(overwinst_1))/3;
+                p_totalincome = average.toFixed(2);
+            }            
+        }
+    }
+    
+    var finalresult = "";
+    finalresult+='<ul>';
+    finalresult+='<li>';
+    finalresult+='<h3>Uw totale toetsinkomen</h3>';
+    finalresult+='<h4>&euro; <span>'+totalincome+'</span></h4></li>';
+    finalresult+='<li>';
+    finalresult+='<h3>Maximale hypotheek</h3>';
+    finalresult+='<h4>&euro; <span>766.999</span></h4>';
+    finalresult+='</li>';
+    finalresult+='<li>';
+    finalresult+='<h3>Maandlasten</h3>';
+    finalresult+='<h4>&euro; <span>91.999</span></h4>';
+    finalresult+='</li>';
+    finalresult+='</ul>';
+    //alert(finalresult);
+    if(totalincome!='0'){
+        $("#h_totalincome").val(totalincome);
+        $("#div_overzicht").html(finalresult);
+        $("#div_overzicht").show();
+    }else{
+        $("#h_totalincome").val("0");
+        $("#div_overzicht").html("");
+        $("#div_overzicht").hide();
+    }
+}*/
+
+function calculate_solvabiliteitp(){
+    var yearselection = $("#h_partneryearselection").val();    
+    if(yearselection=='0' || yearselection=='1'){
+        var eigenvermogen_1 = $("#txt_eigenvermogenp_1").val();
+        var balanstotaal_1 = $("#txt_balanstotaalp_1").val();
+        if(eigenvermogen_1!='' && balanstotaal_1!=''){
+            var percent = (eigenvermogen_1/balanstotaal_1)*100;
+            percent = percent.toFixed(2);
+            //$("#div_solvencyp_percentage").html('<strong>Solvabiliteit percentage</strong><p><span>'+percent+'</span> %</p>');
+            //$('#div_solvabiliteitsscorep').show();
+            $("#h_solvabiliteitp").val(percent);
+        }
+    }else if(yearselection=='2'){
+        var eigenvermogen_1 = $("#txt_eigenvermogenp_1").val();        
+        var eigenvermogen_2 = $("#txt_eigenvermogenp_2").val();
+        var balanstotaal_1 = $("#txt_balanstotaalp_1").val();
+        var balanstotaal_2 = $("#txt_balanstotaalp_2").val();
+        if(eigenvermogen_1!='' && eigenvermogen_2!='' && balanstotaal_1!='' && balanstotaal_2!=''){
+            var average1 = (parseInt(eigenvermogen_1) + parseInt(eigenvermogen_2))/2;
+            var average2 = (parseInt(balanstotaal_1) + parseInt(balanstotaal_2))/2;
+            var percent = (average1/average2)*100;
+            percent = percent.toFixed(2);
+            //$("#div_solvencyp_percentage").html('<strong>Solvabiliteit percentage</strong><p><span>'+percent+'</span> %</p>');
+            //$('#div_solvabiliteitsscorep').show();
+            $("#h_solvabiliteitp").val(percent);
+        }
+    }else if(yearselection=='3'){
+        var eigenvermogen_1 = $("#txt_eigenvermogenp_1").val();        
+        var eigenvermogen_2 = $("#txt_eigenvermogenp_2").val();
+        var eigenvermogen_3 = $("#txt_eigenvermogenp_3").val();
+        var balanstotaal_1 = $("#txt_balanstotaalp_1").val();
+        var balanstotaal_2 = $("#txt_balanstotaalp_2").val();
+        var balanstotaal_3 = $("#txt_balanstotaalp_3").val();
+        if(eigenvermogen_1!='' && eigenvermogen_2!='' && eigenvermogen_3!='' && balanstotaal_1!='' && balanstotaal_2!='' && balanstotaal_3!=''){
+            var average1 = (parseInt(eigenvermogen_1) + parseInt(eigenvermogen_2) + parseInt(eigenvermogen_3))/3;
+            var average2 = (parseInt(balanstotaal_1) + parseInt(balanstotaal_2) + parseInt(balanstotaal_3))/3;
+            
+            var percent = (average1/average2)*100;
+            percent = percent.toFixed(2);
+            //$("#div_solvencyp_percentage").html('<strong>Solvabiliteit percentage</strong><p><span>'+percent+'</span> %</p>');
+            //$('#div_solvabiliteitsscorep').show();
+            $("#h_solvabiliteitp").val(percent);
+        }
+    }
+}
+
+function calculate_liquiditeitp(){
+    var yearselection = $("#h_partneryearselection").val();
+    if(yearselection=='0' || yearselection=='1'){
+        var vlottendeactiva_1 = $("#txt_vlottendeactivap_1").val();
+        var kortvreemdvermogen_1 = $("#txt_kortvreemdvermogenp_1").val();
+        if(vlottendeactiva_1!='' && kortvreemdvermogen_1!=''){
+            var percent = vlottendeactiva_1/kortvreemdvermogen_1;
+            percent = percent.toFixed(2);
+            //$("#div_liquidityp_percentage").html('<strong>Liquiditeitsratio</strong><p><span>'+percent+'</span></p>');
+            //$('#div_liquiditeitsscorep').show();
+            $("#h_liquiditeitp").val(percent);
+        }
+    }else if(yearselection=='2'){
+        var vlottendeactiva_1 = $("#txt_vlottendeactivap_1").val();        
+        var vlottendeactiva_2 = $("#txt_vlottendeactivap_2").val();
+        var kortvreemdvermogen_1 = $("#txt_kortvreemdvermogenp_1").val();
+        var kortvreemdvermogen_2 = $("#txt_kortvreemdvermogenp_2").val();
+        if(vlottendeactiva_1!='' && vlottendeactiva_2!='' && kortvreemdvermogen_1!='' && kortvreemdvermogen_2!=''){
+            var average1 = (parseInt(vlottendeactiva_1) + parseInt(vlottendeactiva_2))/2;
+            var average2 = (parseInt(kortvreemdvermogen_1) + parseInt(kortvreemdvermogen_2))/2;
+
+            var percent = average1/average2;
+            percent = percent.toFixed(2);
+            //$("#div_liquidityp_percentage").html('<strong>Liquiditeitsratio</strong><p><span>'+percent+'</span></p>');
+            //$('#div_liquiditeitsscorep').show();
+            $("#h_liquiditeitp").val(percent);
+        }
+    }else if(yearselection=='3'){
+        var vlottendeactiva_1 = $("#txt_vlottendeactivap_1").val();        
+        var vlottendeactiva_2 = $("#txt_vlottendeactivap_2").val();
+        var vlottendeactiva_3 = $("#txt_vlottendeactivap_3").val();
+        var kortvreemdvermogen_1 = $("#txt_kortvreemdvermogenp_1").val();
+        var kortvreemdvermogen_2 = $("#txt_kortvreemdvermogenp_2").val();
+        var kortvreemdvermogen_3 = $("#txt_kortvreemdvermogenp_3").val();
+        if(vlottendeactiva_1!='' && vlottendeactiva_2!='' && vlottendeactiva_3!='' && kortvreemdvermogen_1!='' && kortvreemdvermogen_2!='' && kortvreemdvermogen_3!=''){
+            var average1 = (parseInt(vlottendeactiva_1) + parseInt(vlottendeactiva_2) + parseInt(vlottendeactiva_3))/3;
+            var average2 = (parseInt(kortvreemdvermogen_1) + parseInt(kortvreemdvermogen_2) + parseInt(kortvreemdvermogen_3))/3;
+            
+            var percent = average1/average2;
+            percent = percent.toFixed(2);
+            //$("#div_liquidityp_percentage").html('<strong>Liquiditeitsratio</strong><p><span>'+percent+'</span></p>');
+            //$('#div_liquiditeitsscorep').show();
+            $("#h_liquiditeitp").val(percent);
+        }
+    }
+}

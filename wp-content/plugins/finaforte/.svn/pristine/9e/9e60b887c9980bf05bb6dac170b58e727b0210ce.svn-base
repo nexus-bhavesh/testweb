@@ -1,0 +1,139 @@
+$(document).ready(function () {
+    var lastBoxOpened = 0;
+
+    $("input[name$='group1']").click(function () {
+        var boxNumber = parseInt($(this).parents('.desc').attr("data-box"));
+
+        //check if the data-box was succesfully retrieved. If not, first option chosen, reset all of it
+        if (isNaN(boxNumber)) {
+            boxNumber = 0;
+        }
+
+        var groupval = $(this).val();
+        //alert(groupval);
+        var target = $("#" + groupval);
+        var newBoxOpened = target.attr("data-box");
+        //check if the last opened box was an earlier one than the newly clicked one
+        if (lastBoxOpened > boxNumber) {
+            //hide boxes beyond the one we opened now
+            $('.desc').each(function () {
+                //if box number is bigger than the currently clicked box, close them.
+                if ($(this).attr("data-box") > boxNumber) {
+                    $(this).hide();
+                    //uncheck the previously selected radio buttons in now hidden things
+                    $('input', this).prop("checked", false);
+                }
+            });
+        }
+        //render target box
+        target.show();
+        //update last opened box to the newly opened one
+        lastBoxOpened = newBoxOpened;
+        $("#div_box2").show();
+        
+        if(groupval=='in1'){
+            $("#div_forhalfyear").show();
+            $("#div_inkomensgegevens_1").hide();
+            $("#div_inkomensgegevens_2").hide();
+            $("#div_inkomensgegevens_3").hide();
+            
+            $("#div_solvabiliteit_2 :input").attr("disabled", true);
+            $("#div_solvabiliteit_3 :input").attr("disabled", true);
+
+            $("#div_liquiditeit_2 :input").attr("disabled", true);
+            $("#div_liquiditeit_3 :input").attr("disabled", true);
+            
+            $("#single_slider_first").jRange({
+                from: 0,
+                to: 3,
+                step: 1,
+                scale: [0.5,1.0,2.0,3.0],
+                format: "%s",
+                width:500,
+                showLabels: false,
+                snap: true,
+                onstatechange: function(value){
+                    if(value=="0"){
+                        $("#div_forhalfyear").show();
+                        $("#div_inkomensgegevens_1").hide();
+                        $("#div_inkomensgegevens_2").hide();
+                        $("#div_inkomensgegevens_3").hide();
+                    }else{
+                        $("#div_forhalfyear").hide();
+                        $("#div_inkomensgegevens_1").show();
+                        $("#div_inkomensgegevens_2").show();
+                        $("#div_inkomensgegevens_3").show();
+                    }
+                        
+                    if(value=="1"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", true);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", true);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", true);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="2"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", true);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", true);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", true);
+                    }else if(value=="3"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", false);
+                        
+                        $("#div_solvabiliteit_2 :input").attr("disabled", false);
+                        $("#div_solvabiliteit_3 :input").attr("disabled", false);
+                        
+                        $("#div_liquiditeit_2 :input").attr("disabled", false);
+                        $("#div_liquiditeit_3 :input").attr("disabled", false);
+                    }
+                }
+            });
+        }else{
+            $(".single-slider").jRange({
+                from: 1,
+                to: 3,
+                step: 1,
+                scale: [1.0,2.0,3.0],
+                format: "%s",
+                width:500,
+                showLabels: false,
+                snap: true,
+                onstatechange: function(value){
+                    if(value=="1"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", true);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", true);
+                    }else if(value=="2"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", true);
+                    }else if(value=="3"){
+                        $("#div_inkomensgegevens_2 :input").attr("disabled", false);
+                        $("#div_inkomensgegevens_3 :input").attr("disabled", false);
+                    }
+                }
+            });
+        }
+    });
+    
+    $("input.numbers").keypress(function(e) {
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            return false;
+        }else{
+            return true;
+        }
+    });
+});
+
+function halfyear_calculation(){
+    var halfyear_first = $("#txt_halfyear_first").val();
+    var halfyear_second = $("#txt_halfyear_second").val();
+    var halfyear_third = $("#txt_halfyear_third").val();
+    
+    
+}

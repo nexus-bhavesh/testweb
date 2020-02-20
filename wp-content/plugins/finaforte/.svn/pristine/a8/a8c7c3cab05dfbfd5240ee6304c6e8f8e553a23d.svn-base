@@ -1,0 +1,51 @@
+<?php
+function basic_form(){
+    global $wpdb;
+    
+    $responseArray = array();
+    
+    if ($_POST['txt_name'] == '' || trim($_POST['txt_name']) == '') {
+        $error = array();
+        $error['name'] = 'txt_name';
+        $errorArray[] = $error;
+    }
+    if ($_POST['txt_phone'] == '' || trim($_POST['txt_phone']) == '') {
+        $error = array();
+        $error['name'] = 'txt_phone';
+        $errorArray[] = $error;
+    }
+    if ($_POST['txt_email'] == '' || trim($_POST['txt_email']) == '') {
+        $error = array();
+        $error['name'] = 'txt_email';
+        $errorArray[] = $error;
+    }
+    if(!isset($_POST['chk_privacy'])){
+        $error = array();
+        $error['name'] = 'div_privacy';
+        $errorArray[] = $error;
+    }
+    if (count($errorArray) == 0) {        
+        $_SESSION['finaforte']['basic_form'] = "1";
+        $_SESSION['finaforte']['name'] = trim($_POST['txt_name']);
+        $_SESSION['finaforte']['phone'] = trim($_POST['txt_phone']);
+        $_SESSION['finaforte']['email'] = trim($_POST['txt_email']);
+        echo json_encode(array("status" => 1, "message" => "Load calculator first page here!"));
+    }else{
+        $responseArray['status'] = 0;
+        $responseArray['error'] = $errorArray;
+        echo json_encode($responseArray);
+        exit;
+    }
+    die;
+}
+add_action('wp_ajax_basic_form', 'basic_form');
+add_action('wp_ajax_nopriv_basic_form', 'basic_form');
+
+
+function start_calculationform(){
+    start_calculation_form();
+    die;
+}
+add_action('wp_ajax_start_calculationform', 'start_calculationform');
+add_action('wp_ajax_nopriv_start_calculationform', 'start_calculationform');
+?>
